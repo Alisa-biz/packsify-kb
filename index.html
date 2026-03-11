@@ -1,0 +1,3143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Packsify CS Knowledge Base</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: #ffffff0f;
+    --border-hover: #ffffff1a;
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --accent-glow: #6c63ff33;
+    --text: #f0f0f5;
+    --text-muted: #8888a0;
+    --text-dim: #55556a;
+    --success: #34d399;
+    --warning: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #6c63ff18 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  .sidebar-header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .search-box {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px 8px 34px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+
+  .search-wrapper {
+    position: relative;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text-dim); }
+
+  .nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 0 24px;
+  }
+
+  .nav::-webkit-scrollbar { width: 4px; }
+  .nav::-webkit-scrollbar-track { background: transparent; }
+  .nav::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+
+  .nav-section {
+    margin-bottom: 4px;
+  }
+
+  .nav-module {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 24px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-module:hover {
+    background: var(--surface2);
+    border-left-color: var(--border-hover);
+  }
+
+  .nav-module.active {
+    background: var(--accent-glow);
+    border-left-color: var(--accent);
+  }
+
+  .nav-module-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    width: 18px;
+    flex-shrink: 0;
+  }
+
+  .nav-module-name {
+    font-size: 13px;
+    color: var(--text-muted);
+    flex: 1;
+    transition: color 0.15s;
+    font-weight: 400;
+  }
+
+  .nav-module:hover .nav-module-name,
+  .nav-module.active .nav-module-name {
+    color: var(--text);
+  }
+
+  .nav-module-arrow {
+    font-size: 10px;
+    color: var(--text-dim);
+    transition: transform 0.2s;
+  }
+
+  .nav-module.open .nav-module-arrow {
+    transform: rotate(90deg);
+  }
+
+  .nav-articles {
+    display: none;
+    padding: 0 0 4px;
+  }
+
+  .nav-articles.open { display: block; }
+
+  .nav-article {
+    display: block;
+    padding: 6px 24px 6px 52px;
+    font-size: 12px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.15s;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav-article:hover { color: var(--text-muted); }
+  .nav-article.active { color: var(--accent2); }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 280px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 80px 80px 60px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--surface2) 0%, transparent 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -100px;
+    top: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #6c63ff12 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-glow);
+    border: 1px solid var(--accent)33;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--accent2);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -1px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* MODULE GRID */
+  .modules-section {
+    padding: 60px 80px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .module-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-glow), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .module-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px #0008;
+  }
+
+  .module-card:hover::before { opacity: 1; }
+
+  .module-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .module-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+
+  .module-icon {
+    font-size: 20px;
+    opacity: 0.8;
+  }
+
+  .module-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    position: relative;
+    line-height: 1.3;
+  }
+
+  .module-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .module-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .module-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+  }
+
+  .module-arrow {
+    font-size: 14px;
+    color: var(--text-dim);
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .module-card:hover .module-arrow {
+    transform: translateX(3px);
+    color: var(--accent2);
+  }
+
+  /* CONTENT PAGE */
+  .content-page {
+    display: none;
+    padding: 60px 80px;
+    max-width: 860px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .content-page.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .breadcrumb-link {
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .breadcrumb-link:hover { color: var(--accent2); }
+
+  .breadcrumb-sep { color: var(--text-dim); }
+
+  .content-page h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 8px;
+    line-height: 1.1;
+  }
+
+  .content-page .module-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    margin-top: 8px;
+  }
+
+  .articles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .article-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .article-item:hover {
+    border-color: var(--border-hover);
+    background: var(--surface2);
+  }
+
+  .article-num {
+    width: 28px;
+    height: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .article-info { flex: 1; }
+
+  .article-title {
+    font-weight: 500;
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+
+  .article-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+
+  .article-chevron {
+    font-size: 14px;
+    color: var(--text-dim);
+    align-self: center;
+    transition: transform 0.2s, color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .article-item:hover .article-chevron {
+    transform: translateX(3px);
+    color: var(--accent2);
+  }
+
+  /* ARTICLE DETAIL */
+  .article-detail {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .article-detail.active { display: block; }
+
+  .article-detail h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .article-detail .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 28px 0;
+  }
+
+  .article-body {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .article-body h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 28px 0 10px;
+    letter-spacing: -0.3px;
+  }
+
+  .article-body p { margin-bottom: 14px; }
+
+  .article-body ul, .article-body ol {
+    padding-left: 20px;
+    margin-bottom: 14px;
+  }
+
+  .article-body li { margin-bottom: 6px; }
+
+  .callout {
+    background: var(--accent-glow);
+    border: 1px solid var(--accent)33;
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .callout.warning {
+    background: #fbbf2410;
+    border-color: #fbbf2433;
+    border-left-color: var(--warning);
+  }
+
+  .quiz-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-top: 32px;
+  }
+
+  .quiz-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .quiz-q {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .quiz-q:last-child { border-bottom: none; }
+
+  .quiz-q-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-dim);
+    width: 16px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  /* BACK BUTTON */
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px 0;
+    margin-bottom: 24px;
+    transition: color 0.15s;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .back-btn:hover { color: var(--accent2); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 280px;
+    right: 0;
+    height: 2px;
+    background: var(--border);
+    z-index: 200;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.3s;
+    width: 0%;
+  }
+
+  /* SEARCH RESULTS */
+  .search-results {
+    display: none;
+    padding: 60px 80px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .search-results.active { display: block; }
+
+  .search-result-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .search-result-item:hover {
+    border-color: var(--border-hover);
+    background: var(--surface2);
+  }
+
+  .search-result-title {
+    font-weight: 500;
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .search-result-path {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  mark {
+    background: var(--accent-glow);
+    color: var(--accent2);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  /* PASSWORD GATE */
+  .gate-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+  }
+
+  .gate-overlay.hidden { display: none; }
+
+  .gate-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 44px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+  }
+
+  .gate-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--accent)22, transparent 60%);
+    pointer-events: none;
+  }
+
+  .gate-logo {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: white;
+    margin: 0 auto 20px;
+    box-shadow: 0 0 32px var(--accent-glow);
+  }
+
+  .gate-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .gate-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+
+  .gate-input-wrap {
+    position: relative;
+    margin-bottom: 12px;
+  }
+
+  .gate-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+    letter-spacing: 3px;
+  }
+
+  .gate-input:focus { border-color: var(--accent); }
+  .gate-input::placeholder { letter-spacing: 0; color: var(--text-dim); }
+
+  .gate-input.error { border-color: #f87171; animation: shake 0.3s ease; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .gate-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Syne', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.3px;
+  }
+
+  .gate-btn:hover { opacity: 0.9; }
+  .gate-btn:active { transform: scale(0.98); }
+
+  .gate-error {
+    font-size: 12px;
+    color: #f87171;
+    margin-top: 10px;
+    min-height: 18px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .modules-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    .sidebar.open { transform: none; }
+    .main { margin-left: 0; }
+    .progress-bar { left: 0; }
+    .hero, .modules-section, .content-page, .search-results { padding: 40px 24px; }
+    .hero h1 { font-size: 36px; }
+    .modules-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-card">
+    <div class="gate-logo">P</div>
+    <div class="gate-title">CS Knowledge Base</div>
+    <div class="gate-sub">Enter your team password to continue</div>
+    <div class="gate-input-wrap">
+      <input class="gate-input" id="gateInput" type="password" placeholder="Password" autocomplete="off">
+    </div>
+    <button class="gate-btn" onclick="checkPassword()">Enter →</button>
+    <div class="gate-error" id="gateError"></div>
+  </div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-mark">P</div>
+      <div>
+        <div class="logo-text">Packsify</div>
+      </div>
+    </div>
+    <div class="logo-sub">CS Knowledge Base</div>
+  </div>
+
+  <div class="search-box">
+    <div class="search-wrapper">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" id="searchInput" type="text" placeholder="Search articles…" autocomplete="off">
+    </div>
+  </div>
+
+  <nav class="nav" id="nav"></nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main" id="main">
+
+  <!-- HOME -->
+  <div id="homePage">
+    <div class="hero">
+      <div class="hero-tag"><span class="hero-dot"></span> CS Team — Internal</div>
+      <h1>CS Knowledge<br><span>Base</span></h1>
+      <p class="hero-desc">Everything your team needs to deliver exceptional support — from shift operations to VIP management, policies, and beyond.</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">12</div>
+          <div class="stat-label">Modules</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">98</div>
+          <div class="stat-label">Articles</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">L1–L2</div>
+          <div class="stat-label">All Levels</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modules-section">
+      <div class="section-label">All Modules</div>
+      <div class="modules-grid" id="modulesGrid"></div>
+    </div>
+  </div>
+
+  <!-- MODULE PAGE -->
+  <div id="modulePage" class="content-page">
+    <div class="breadcrumb">
+      <span class="breadcrumb-link" onclick="showHome()">Home</span>
+      <span class="breadcrumb-sep">›</span>
+      <span id="modulePageBreadcrumb"></span>
+    </div>
+    <div id="modulePageNum" class="module-num" style="margin-bottom:6px"></div>
+    <h2 id="modulePageTitle"></h2>
+    <div class="module-tag" id="modulePageTag"></div>
+    <div class="articles-list" id="modulePageArticles"></div>
+  </div>
+
+  <!-- ARTICLE PAGE -->
+  <div id="articlePage" class="content-page">
+    <div class="breadcrumb">
+      <span class="breadcrumb-link" onclick="showHome()">Home</span>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-link" id="articleModuleBreadcrumb" onclick="showCurrentModule()"></span>
+      <span class="breadcrumb-sep">›</span>
+      <span id="articleBreadcrumb"></span>
+    </div>
+    <button class="back-btn" onclick="showCurrentModule()">← Back to module</button>
+    <div id="articleContent"></div>
+  </div>
+
+  <!-- SEARCH RESULTS -->
+  <div id="searchPage" class="search-results">
+    <div class="section-label" id="searchLabel"></div>
+    <div id="searchResultsList"></div>
+  </div>
+
+</main>
+
+<script>
+const modules = [
+  {
+    num: "01", icon: "🚀", title: "Getting Started",
+    desc: "Onboarding essentials, team structure, tools setup, and core principles.",
+    articles: [
+      {
+        title: "Welcome to CS",
+        desc: "Your role, the team structure, and what excellence looks like at Packsify.",
+        content: `
+          <h4>What is Packsify?</h4>
+          <p>Packsify is an independent order facilitation service — not a game publisher, payment processor, or affiliate. Clients pay for the service of having their in-game purchases completed safely and efficiently through official store channels.</p>
+          <h4>The CS Team's Purpose</h4>
+          <p>Customer Support is the primary trust layer between Packsify and its clients. CS owns all user-specific, sensitive, and issue-driven interactions via <strong>Intercom</strong>. Growth owns all public, proactive, and community-driven communication via <strong>Discord</strong>.</p>
+          <div class="callout">💡 <strong>Golden Rule:</strong> If it is user-specific, sensitive, or broken → <strong>CS owns it</strong>. If it is public, educational, proactive, or community-driven → <strong>Growth owns it</strong>.</div>
+          <h4>Team Levels</h4>
+          <ul>
+            <li><strong>L1 Agent</strong> — Handles order management, proactive Intercom, and flags escalations to L2.</li>
+            <li><strong>L2 Agent</strong> — Handles operational oversight, deposits, reactive Intercom, Discord tickets, supplier coordination, and the shift report.</li>
+            <li><strong>Team Lead (TL)</strong> — Supervision, coordination, process improvement, and support during peak volume or staffing gaps.</li>
+          </ul>
+          <h4>CS Ownership Scope</h4>
+          <ul>
+            <li>Bugs, errors, and account issues</li>
+            <li>Billing and technical problems</li>
+            <li>User-specific troubleshooting and education</li>
+            <li>Sensitive, private, or account-level cases</li>
+            <li>VIP / VSP communication</li>
+          </ul>
+          <h4>CS ↔ Growth Handoff</h4>
+          <p>When a Growth team member (e.g. on Discord) encounters a product issue, account problem, or VIP activation interest, they immediately create a CS ticket in Intercom with private notes and full context. CS takes ownership, resolves it, then Growth resumes the community relationship.</p>
+        `
+      },
+      {
+        title: "Tools & Systems Overview",
+        desc: "Intercom, ClickUp, Discord, WeChat — what each tool is used for.",
+        content: `
+          <h4>Core Tools</h4>
+          <ul>
+            <li><strong>Intercom</strong> — Primary customer communication platform. All client conversations, user notes, CSAT tracking, and tagging happen here. CS owns this channel.</li>
+            <li><strong>ClickUp</strong> — Internal workspace for SOPs, task tracking, reporting, shift management, and team documentation. Source of truth for all processes.</li>
+            <li><strong>Discord</strong> — Community and support channel. Growth owns public communication; CS handles Created Tickets.</li>
+            <li><strong>WeChat</strong> — Supplier communication channel. All supplier coordination happens via designated WeChat group channels — never via direct messages.</li>
+          </ul>
+          <h4>Tool Ownership Rules</h4>
+          <ul>
+            <li>Client issues → <strong>Intercom</strong></li>
+            <li>Supplier coordination → <strong>WeChat groups</strong></li>
+            <li>Bug reporting → <strong>ClickUp Bug Form</strong></li>
+            <li>Internal team communication → <strong>Discord + ClickUp</strong></li>
+          </ul>
+          <div class="callout warning">⚠️ Never share client information or coordinate with suppliers via direct messages. Always use the designated group channels.</div>
+          <h4>Key Reports & Sheets</h4>
+          <ul>
+            <li><strong>Finance Sheet</strong> — Order revenue, VIP orders tab, credit tracking</li>
+            <li><strong>Manually Added Credits Sheet</strong> — Logs all manual credit additions with reason codes</li>
+            <li><strong>VIP CRM</strong> — Tracks Fast Lane, SmartPay, activation dates per VIP client</li>
+          </ul>
+        `
+      },
+      {
+        title: "Shift Structure & Task Distribution",
+        desc: "How shifts are organized, who owns what, and task ownership by level.",
+        content: `
+          <h4>Shift Configurations</h4>
+          <p>Shifts are structured based on staffing. Task ownership is clearly defined to prevent gaps and duplication.</p>
+          <h4>Two-Person Shifts (L2 + L1)</h4>
+          <p><strong>Standard / Slow Shift:</strong></p>
+          <ul>
+            <li>Orders → L1</li>
+            <li>Deposits → L2</li>
+            <li>Intercom → L2 (Reactive) | L1 (Proactive)</li>
+            <li>Discord → L1 (Created Tickets #1) | L2 (Created Tickets #2 + Prestige Club)</li>
+            <li>Report → L2</li>
+          </ul>
+          <p><strong>Busy Shift:</strong></p>
+          <ul>
+            <li>Orders → L1 (Non-Prestige) | L2 (Prestige + New Clients)</li>
+            <li>Deposits → L2</li>
+            <li>Intercom → L2 (Reactive) | L1 (Proactive)</li>
+            <li>Discord → L2</li>
+            <li>Report → L2</li>
+          </ul>
+          <h4>Three-Person Shifts</h4>
+          <p><strong>1 TL + 1 L2 + 1 L1 (Standard):</strong></p>
+          <ul>
+            <li>Orders → L1 | Deposits → L2 | Oversight → TL | Report → L2</li>
+          </ul>
+          <p><strong>1 TL + 1 L2 + 1 L1 (Busy):</strong></p>
+          <ul>
+            <li>Orders → L1 (Non-Prestige) | L2 (Prestige + New Clients) | TL helps if heavy</li>
+            <li>Deposits → TL | Report → TL</li>
+          </ul>
+          <p><strong>1 L2 + 2 L1 (Standard):</strong></p>
+          <ul>
+            <li>Orders → L1-A (Prestige) | L1-B (Non-Prestige + NC)</li>
+            <li>Deposits → L2 | Report → L2</li>
+          </ul>
+          <div class="callout">💡 <strong>Note:</strong> Team Leads will always jump in to handle L1/L2 tickets during peak volume or staffing gaps to maintain SLAs and client experience.</div>
+          <h4>Mid-Shift Adjustments</h4>
+          <p>Task assignments can be adjusted mid-shift by mutual agreement between team members. Any changes must be clearly communicated so no task falls through the cracks.</p>
+        `
+      },
+      {
+        title: "Shift Report SOP",
+        desc: "How to complete the shift report — template, fields, and a sample completed report.",
+        content: `
+          <h4>Purpose</h4>
+          <p>The shift report ensures smooth communication between team members during shift transitions. It provides a clear record of tasks completed, issues encountered, pending tasks, and other relevant information to maintain continuity and operational efficiency.</p>
+          <div class="callout">📋 <strong>Owner:</strong> L2 Agent (or TL on TL shifts). Must be completed before the shift ends.</div>
+          <h4>Shift Report Template</h4>
+          <ul>
+            <li><strong>Date:</strong></li>
+            <li><strong>Shift:</strong></li>
+            <li><strong>L2:</strong></li>
+            <li><strong>L1:</strong></li>
+            <li><strong>Available Suppliers:</strong> Dahu / SoS</li>
+            <li><strong>Bugs / System Errors:</strong> Description + Action Taken</li>
+            <li><strong>Order Issues:</strong> Order ID + Client + Action Taken</li>
+            <li><strong>Payment Issues:</strong> Payment ID + Client + Action Taken</li>
+            <li><strong>Notes for the Next Shift:</strong></li>
+          </ul>
+          <h4>Sample Completed Shift Report</h4>
+          <div class="callout">
+            <strong>SHIFT REPORT</strong><br>
+            Date: 07/27/2025 | Shift: Intermediate Shift 2 | L2: Gryffindor | L1: Julia<br><br>
+            <strong>Available Suppliers:</strong> Dahu 1/2 | SoS 6/7 — Both working well<br><br>
+            <strong>Order Issues:</strong> Client: sample@email.com | Order ID: BUN-xxxxxxxxxx<br>
+            Details: Client paid $5 less. Action: Manually deducted 500 credits, asked supplier to settle on WeChat.<br><br>
+            <strong>Payment Issues:</strong> Client: sample@email.com | Payment ID: CRE-xxxxxxxxxx<br>
+            Details: Credits not added after Stripe payment. Action: Verified payment, manually added credits.<br><br>
+            <strong>Bugs:</strong> Gray screen on main order page — Status: Ongoing<br><br>
+            <strong>Notes for Next Shift:</strong> Shift was busy.
+          </div>
+        `
+      },
+      {
+        title: "Key Metrics & Targets",
+        desc: "CSAT, FRT, ART, VIP SLA — what you are measured on and why it matters.",
+        content: `
+          <h4>Daily Performance Targets</h4>
+          <ul>
+            <li><strong>VIP CSAT:</strong> 96% minimum</li>
+            <li><strong>First Response Time (FRT):</strong> ≤ 1 minute</li>
+            <li><strong>Average Response Time (ART):</strong> ≤ 30 minutes</li>
+            <li><strong>Unresponsive Client Decision:</strong> ≤ 20 minutes</li>
+            <li><strong>VIP Order Fulfillment:</strong> ≤ 13 minutes</li>
+            <li><strong>VIP SLA:</strong> 90%</li>
+            <li><strong>Device Blocking Resolution:</strong> &lt; 20 minutes</li>
+          </ul>
+          <h4>Why These Metrics Matter</h4>
+          <p>Packsify's top 20% of clients account for 88.6% of revenue. Every missed response time or low CSAT score directly risks the most valuable relationships. These targets are not bureaucratic — they protect the business.</p>
+          <h4>CSAT Ratings</h4>
+          <p>CSAT is collected via Intercom after conversations close. Negative ratings (Terrible, Bad, Okay) are reviewed weekly. Every negative rating requires a root cause note.</p>
+          <div class="callout warning">⚠️ Never let a VIP client wait more than 1 minute for a first response. If you are handling multiple conversations, acknowledge the VIP first — even with a brief "I'm looking into this now."</div>
+          <h4>Reporting Cadence</h4>
+          <ul>
+            <li><strong>Daily:</strong> Shift report (L2)</li>
+            <li><strong>Weekly (Friday):</strong> Intercom Performance Report (Trishia), VIP Metrics Report (Yerevan), Reviews Report</li>
+            <li><strong>Biweekly (Thursday):</strong> Team Feedback Form (Trishia)</li>
+          </ul>
+        `
+      }
+    ]
+  },
+  {
+    num: "02", icon: "⏱", title: "Shift Operations",
+    desc: "Task distribution, shift reports, handovers, and operational flow.",
+    articles: [
+      {
+        title: "Task Distribution Framework",
+        desc: "Who owns what — L1, L2, and Team Lead responsibilities per shift type.",
+        quiz: ["On a standard 2-person shift, who handles deposits?", "Who writes the shift report?"],
+        content: `
+          <h4>Purpose</h4>
+          <p>This framework defines clear task ownership, consistent workflow execution, and efficient collaboration. It empowers L1 Agents with in-app operations, L2 Agents with oversight and escalation handling, and Team Leads with supervision, coordination, and process improvement.</p>
+          <div class="callout">💡 <strong>Note:</strong> Team Leads will always jump in to handle L1/L2 tickets during peak volume or staffing gaps to maintain SLAs and client experience.</div>
+          <h4>Two-Person Shifts (L2 + L1)</h4>
+          <p><strong>Standard & Slow:</strong> Orders → L1 | Deposits → L2 | Intercom → L2 (Reactive) / L1 (Proactive) | Discord → L1 (Ticket #1) / L2 (Ticket #2 + Prestige) | Report → L2</p>
+          <p><strong>Busy:</strong> Orders → L1 (Non-Prestige) / L2 (Prestige + NC) | Deposits → L2 | Discord → L2 | Report → L2</p>
+          <h4>Three-Person Shifts</h4>
+          <p><strong>1 TL + 1 L2 + 1 L1 (Standard):</strong> Orders → L1 | Deposits → L2 | Improvement Tasks → TL | Report → L2 | Oversight → TL</p>
+          <p><strong>1 TL + 1 L2 + 1 L1 (Busy):</strong> Orders → L1/L2/TL as needed | Deposits → TL | Report → TL</p>
+          <p><strong>1 L2 + 2 L1 (Standard):</strong> Orders → L1-A (Prestige) / L1-B (Non-Prestige + NC) | Deposits → L2 | Report → L2</p>
+          <p><strong>1 L2 + 2 L1 (Busy):</strong> Orders → L1-A (Prestige) / L1-B (Non-Prestige) / L2 (New & Royalty) | Intercom → L1-A (Prestige) / L1-B (Non-Prestige) / L2 (Others PS + Reactive)</p>
+          <h4>Mid-Shift Adjustments</h4>
+          <p>Task assignments can be adjusted mid-shift by mutual agreement. Any changes must be clearly communicated so no task falls through the cracks.</p>
+        `
+      },
+      {
+        title: "Shift Report SOP",
+        desc: "How to complete the shift report: template, fields, and submission.",
+        quiz: ["Name 4 required sections in the shift report.", "What is the purpose of the shift report?"],
+        content: `
+          <h4>Purpose</h4>
+          <p>The shift report ensures smooth communication during shift transitions. It provides a clear record of tasks completed, issues encountered, and pending items to maintain continuity and operational efficiency.</p>
+          <div class="callout">📋 <strong>Owner:</strong> L2 Agent (or TL on TL shifts). Must be completed before the shift ends.</div>
+          <h4>Shift Report Template</h4>
+          <ul>
+            <li><strong>Date / Shift / L2 / L1</strong></li>
+            <li><strong>Available Suppliers:</strong> Dahu / SoS status</li>
+            <li><strong>Bugs / System Errors:</strong> Description + Action Taken</li>
+            <li><strong>Order Issues:</strong> Order ID + Client + Action Taken</li>
+            <li><strong>Payment Issues:</strong> Payment ID + Client + Action Taken</li>
+            <li><strong>Notes for the Next Shift</strong></li>
+          </ul>
+          <h4>Sample Completed Report</h4>
+          <div class="callout">
+            <strong>SHIFT REPORT</strong><br>
+            Date: 07/27/2025 | Shift: Intermediate Shift 2 | L2: Gryffindor | L1: Julia<br><br>
+            <strong>Available Suppliers:</strong> Dahu 1/2 | SoS 6/7 — Both working well<br><br>
+            <strong>Order Issues:</strong> Client: sample@email.com | Order: BUN-xxxxxxxxxx<br>
+            Client paid $5 less. Action: Deducted 500 credits, asked supplier to settle on WeChat.<br><br>
+            <strong>Payment Issues:</strong> Client: sample@email.com | Payment: CRE-xxxxxxxxxx<br>
+            Credits not added after Stripe payment. Action: Verified, manually added credits.<br><br>
+            <strong>Bugs:</strong> Gray screen on main order page — Status: Ongoing<br>
+            <strong>Notes for Next Shift:</strong> Shift was busy.
+          </div>
+        `
+      },
+      {
+        title: "Shift Handover Standards",
+        desc: "What to communicate to the next shift and how.",
+        quiz: ["What must be included in handover notes?"],
+        content: `
+          <h4>Handover Purpose</h4>
+          <p>Handovers prevent gaps, duplicate actions, and communication failures between shifts. Every shift must end with a clean, documented handover so the next shift can operate immediately without confusion.</p>
+          <h4>What Must Be in Every Handover</h4>
+          <ul>
+            <li>Supplier status and availability</li>
+            <li>Any open or in-progress orders</li>
+            <li>Ongoing bugs or system errors (with current status)</li>
+            <li>Clients awaiting follow-up (names + Intercom links)</li>
+            <li>Any pending payments or credit additions</li>
+            <li>Notes on shift volume (Busy / Standard / Slow)</li>
+          </ul>
+          <div class="callout warning">⚠️ If you are handing off a game testing request mid-process, you MUST provide detailed notes on what has been done and what remains. The next agent takes full ownership.</div>
+          <h4>Handover Format</h4>
+          <p>The Shift Report IS the handover. Complete it fully before your shift ends. Post it in the designated Discord channel so the next shift can see it before logging in.</p>
+        `
+      },
+      {
+        title: "Discord & Intercom During Shifts",
+        desc: "Channel management, ticket ownership, and priority queues.",
+        quiz: ["Which Discord tickets does L1 own?"],
+        content: `
+          <h4>Intercom — CS Ownership</h4>
+          <p>All reactive (problem-solving, account-specific) communication happens in Intercom. CS is responsible for this channel at all times.</p>
+          <ul>
+            <li><strong>L2:</strong> Reactive Intercom — handles incoming issues, bugs, payment problems, escalations</li>
+            <li><strong>L1:</strong> Proactive Intercom — outreach for reviews, order updates, follow-ups</li>
+          </ul>
+          <h4>Discord — Task Routing</h4>
+          <ul>
+            <li><strong>L1 owns:</strong> Created Tickets #1 (Standard/Slow shifts)</li>
+            <li><strong>L2 owns:</strong> Created Tickets #2 + Prestige Club (Standard/Slow); all tickets on Busy shifts</li>
+            <li><strong>TL owns:</strong> Improvement Tasks, oversight, and escalation follow-ups</li>
+          </ul>
+          <div class="callout">💡 <strong>Rule:</strong> Never leave a Discord ticket unassigned. If you're unsure who owns it, check the shift configuration and confirm with your L2 or TL.</div>
+          <h4>Priority Order</h4>
+          <ol>
+            <li>VIP / Prestige client messages — always first</li>
+            <li>Active order issues</li>
+            <li>Payment issues</li>
+            <li>General inquiries</li>
+          </ol>
+        `
+      },
+      {
+        title: "Escalation During Shifts",
+        desc: "When and how to escalate — including Team Lead and IT pathways.",
+        quiz: ["Name 3 situations that require immediate Team Lead escalation."],
+        content: `
+          <h4>When to Escalate to Team Lead</h4>
+          <ul>
+            <li>Supplier keeps delaying with no explanation</li>
+            <li>A game testing conflict (one supplier says safe, one says not)</li>
+            <li>A client threatens chargeback, legal action, or public review</li>
+            <li>A payment is disputed or flagged for fraud</li>
+            <li>A client appears to be under 18</li>
+            <li>You accidentally shared internal information with a user</li>
+            <li>An order has been stuck for more than 20 minutes and redistribution hasn't helped</li>
+          </ul>
+          <div class="callout warning">⚠️ Escalate via <strong>#cs-escalations</strong> on Discord. Include: client email, order ID, issue summary, and steps already taken.</div>
+          <h4>When to Ping IT</h4>
+          <p>Only ping IT for <strong>Bucket 4 urgent incidents</strong>:</p>
+          <ul>
+            <li>System down / major outage</li>
+            <li>Payment flow not working for all/most users</li>
+            <li>Login/registration failures at scale</li>
+            <li>Security risks (compromised accounts, data breach)</li>
+            <li>Data integrity issues (duplicate orders, missing credits at scale)</li>
+          </ul>
+          <p>For all other bugs → submit a Bug Form. Do not ping IT on Discord.</p>
+          <h4>Escalation Minimum Requirements</h4>
+          <ul>
+            <li>Customer email or user ID</li>
+            <li>One-line summary of the issue</li>
+            <li>Troubleshooting steps already completed</li>
+            <li>Screenshot if available</li>
+          </ul>
+        `
+      }
+    ]
+  },
+  {
+    num: "03", icon: "👤", title: "Customer Account Management",
+    desc: "Account setup, user notes, verification, and in-app management.",
+    articles: [
+      {
+        title: "Account Overview",
+        desc: "How customer accounts work in the Packsify app.",
+        quiz: ["What triggers a Status change to Verified?"],
+        content: `
+          <h4>Account Structure</h4>
+          <p>Every Packsify user has an account managed inside the <strong>Packsify App → Manage Customer</strong>. The account holds game credentials, order history, credits balance, and bind information.</p>
+          <h4>Status Field</h4>
+          <p>Status automatically changes to <strong>Verified</strong> after a successful first order. <strong>Never</strong> update the Status field manually. If a user has completed a successful order but still shows "Not Verified," submit a Bug Form.</p>
+          <div class="callout warning">⚠️ If you manually update Status, it corrupts the verification trail. Always let the system do it automatically.</div>
+          <h4>Game Accounts Section</h4>
+          <p>Each user can have multiple games linked to their account. Each game entry contains: Bind type, Email/password, Game Account ID, and Status. All fields are editable by CS agents when updates are required.</p>
+          <h4>Supplier Access</h4>
+          <p>Suppliers rely entirely on the information stored in the app. If credentials are outdated, orders fail. This is why updating the app is <strong>mandatory</strong> — not optional.</p>
+        `
+      },
+      {
+        title: "Intercom User Notes SOP",
+        desc: "How to write, update, and use User Notes effectively.",
+        quiz: ["Name 5 fields in the User Notes template.", "When must you review User Notes?"],
+        content: `
+          <h4>Why User Notes Matter</h4>
+          <p>User Notes are the team's <strong>shared memory</strong>. They preserve context, reduce mistakes, and enable consistent decisions across all agents — without users having to repeat themselves.</p>
+          <div class="callout warning">⚠️ User Notes are strictly internal. They must NEVER be shared with users or anyone outside the team or approved suppliers.</div>
+          <h4>5 Core Reasons</h4>
+          <ul>
+            <li><strong>Continuity & Speed:</strong> Immediate context on history, prior compensation, and known issues</li>
+            <li><strong>Consistency & Cost Control:</strong> Prevents double compensation and policy drift</li>
+            <li><strong>Fraud & Risk:</strong> Track suspicious patterns over time for audit trail</li>
+            <li><strong>Internal Alignment:</strong> Replaces tribal knowledge — all context in one place</li>
+            <li><strong>Legal Readiness:</strong> Clear timeline of decisions and policy enforcement evidence</li>
+          </ul>
+          <h4>User Notes Template</h4>
+          <ul>
+            <li><strong>Date:</strong> mm/dd/yyyy</li>
+            <li><strong>Agent username</strong></li>
+            <li><strong>Game(s):</strong> Games the user plays</li>
+            <li><strong>Platform/Device:</strong> Android, iOS, etc.</li>
+            <li><strong>Bind types:</strong> FunPlus, Facebook, Google, Email, etc.</li>
+            <li><strong>User Account ID:</strong> Account ID for the game</li>
+            <li><strong>Email / Password / Phone:</strong> Only if mandatory for order processing</li>
+            <li><strong>Compensation:</strong> Ticket ID, amount, reason — mark as "one-time exception" if applicable</li>
+            <li><strong>Fraud/Scam warning:</strong> Low / Medium / High</li>
+            <li><strong>Initiatives:</strong> Trustpilot, SmartPay, Fast Lane — offered or completed</li>
+            <li><strong>Other:</strong> Important flags all agents should know</li>
+          </ul>
+          <h4>Example Notes</h4>
+          <div class="callout">
+            <strong>First contact:</strong> 01/06/2026 Primordial: Game: WhiteOut Survival, Bind: Google; Device: iOS, Email: example@packsify.com, password: 184hfsk389l<br><br>
+            <strong>After initiative:</strong> 01/06/2026 Primordial: Requested a review and offered SmartPay and Fast Lane, as user appeared satisfied.<br><br>
+            <strong>After compensation:</strong> 01/06/2026 Primordial, Game: WhiteOut Survival, compensated 1,000 credits as a <strong>one-time exception</strong> due to a 45-minute delivery delay.<br><br>
+            <strong>Fraud note:</strong> Medium fraud risk — multiple failed verification attempts. Monitor future compensation requests.
+          </div>
+          <h4>How to Use Notes Correctly</h4>
+          <ol>
+            <li>Always review existing notes when greeting a user</li>
+            <li>Check if info already exists before creating a new note</li>
+            <li>Update existing notes when information changes (add date + username)</li>
+            <li>Create new notes only when info is genuinely new</li>
+            <li>If you notice the format is outdated, update it to the current structure</li>
+          </ol>
+        `
+      },
+      {
+        title: "Updating User Info In-App",
+        desc: "Passwords, emails, bind types, game IDs — how to update each.",
+        quiz: ["Why must you update the password in-app AND notify the supplier?", "What must you never update manually?"],
+        content: `
+          <h4>Why In-App Updates Are Mandatory</h4>
+          <p>Users cannot update their own credentials in the app. When a password, email, phone number, bind type, or game ID changes — CS must update it. Failure to do so causes: order delays, supplier friction, repeated password issues, and increased churn risk.</p>
+          <div class="callout warning">⚠️ Updating user information is NOT optional. It is a required CS step that directly affects supplier ability to process orders.</div>
+          <h4>General Update Process</h4>
+          <ol>
+            <li>Update information in <strong>User Notes</strong> in Intercom</li>
+            <li>Update information <strong>In-App</strong> (Manage Customer → Edit game account)</li>
+            <li>Notify the supplier so they can continue with the order</li>
+            <li>Notify the user their account has been updated</li>
+            <li>Ask the user to proactively inform you of future changes</li>
+          </ol>
+          <h4>Wrong Password Process</h4>
+          <p><strong>Step 1 — Eliminate manual input errors:</strong> Ask if the supplier copy-pasted (not typed) the password. This especially affects SOS. Chinese keyboards differ from European keyboards. Only after confirming the password was copy-pasted exactly should you contact the user.</p>
+          <p><strong>Step 2 — User confirms new password:</strong> If changed, update User Notes + update In-App + notify supplier.</p>
+          <div class="callout">💡 If you only notify the supplier but DON'T update the app, the next order will fail again — suppliers rely entirely on the app and don't keep their own records of password changes.</div>
+          <h4>Bind Status Updates</h4>
+          <p>6 supported bind types: Google, Facebook, FunPlus, IM30, VK, IGG. Use the dropdown in "Edit game account info." If the user has backup binds, add them to User Notes. If the primary bind isn't working, provide the secondary bind as a temporary option.</p>
+          <h4>Email / Phone</h4>
+          <p>If a user is unsure which email/phone they used: <em>"Due to data protection laws, I can't disclose the full email, but I can confirm it ends with @gmail.com."</em> Never reveal full email or phone number.</p>
+          <h4>Status Field</h4>
+          <p><strong>NEVER update Status manually.</strong> It changes automatically after a successful order. If stuck, submit a Bug Form.</p>
+        `
+      },
+      {
+        title: "Wrong Password Process",
+        desc: "Step-by-step when a supplier reports a password not working.",
+        quiz: ["What must you confirm before contacting the user about a wrong password?"],
+        content: `
+          <h4>Overview</h4>
+          <p>Many order delays happen because passwords were changed by users but not updated in-app. When a supplier reports a password isn't working, follow this process before doing anything else.</p>
+          <h4>Step 1 — Check Copy-Paste vs. Manual Entry</h4>
+          <p>Ask the supplier: "Did you copy-paste the password or type it manually?" They must always copy-paste — especially if the password contains special characters (., !, #, %, &). Chinese keyboards differ from European keyboards, and manual entry creates typos. Dahu almost always copy-pastes (fewer issues), but SOS may type manually.</p>
+          <p><strong>Only after confirming copy-paste was done exactly as shown should you contact the user.</strong></p>
+          <h4>Step 2 — Contact User</h4>
+          <p>If confirmed copy-paste and still failing, ask the user if they changed their password. If yes:</p>
+          <ol>
+            <li>Update User Notes in Intercom with new password</li>
+            <li>Update password in-app (Manage Customer → Edit → pen icon → Set new password)</li>
+            <li>Notify supplier that new password is ready</li>
+          </ol>
+          <div class="callout warning">⚠️ Before saving: Use the eye icon to verify accuracy. Proofread every character — one wrong character breaks the order again.</div>
+          <h4>Remember</h4>
+          <p>We can make one mistake and recover. If we make the same mistake again, the user is one step closer to churning — if not already gone.</p>
+        `
+      },
+      {
+        title: "Bind Types Overview",
+        desc: "Google, Facebook, FunPlus, IM30, VK, IGG — when and how each is used.",
+        quiz: ["Name the 6 bind types Packsify supports."],
+        content: `
+          <h4>Supported Bind Types</h4>
+          <ul>
+            <li><strong>Google</strong> — Most common. Requires managing verification codes/2FA.</li>
+            <li><strong>Facebook</strong> — Common. Easy approval system via Facebook login.</li>
+            <li><strong>FunPlus</strong> — Used in State of Survival, Sea of Conquest.</li>
+            <li><strong>IM30</strong> — Used in Last Fortress: Underground.</li>
+            <li><strong>VK</strong> — Less common. Used in some Eastern European-popular titles.</li>
+            <li><strong>IGG</strong> — Used in IGG-published games.</li>
+          </ul>
+          <h4>Not Supported</h4>
+          <ul>
+            <li><strong>Apple ID / Game Center</strong> — Platform-bound, no access possible</li>
+            <li><strong>Google Play Games</strong> — Platform-bound, no access possible</li>
+            <li><strong>Biometric (Face ID / Fingerprint)</strong> — Cannot be bypassed</li>
+          </ul>
+          <h4>Top 2026 Games — Bind Options</h4>
+          <ul>
+            <li>Whiteout Survival → Facebook, Google</li>
+            <li>Sea of Conquest → Facebook, Google, FunPlus</li>
+            <li>State of Survival → Facebook, Google, FunPlus, VK</li>
+            <li>Last Fortress → Facebook, IM30</li>
+            <li>Last War: Survival → Email</li>
+            <li>King Shot → Facebook, Google</li>
+          </ul>
+          <div class="callout">💡 Always update the primary bind in-app. Add backup binds to User Notes. If primary is temporarily down, provide suppliers the secondary option while resolving.</div>
+        `
+      },
+      {
+        title: "Data Protection for Agents",
+        desc: "What you can and cannot share about a user's account.",
+        quiz: ["A user asks for their full email. What can you share?"],
+        content: `
+          <h4>What You Must Never Disclose</h4>
+          <ul>
+            <li>Internal systems, tools, logic, workflows, or processes</li>
+            <li>Personal data belonging to another individual</li>
+            <li>Sensitive or confidential business information</li>
+            <li>Any information not required to resolve the user's request</li>
+          </ul>
+          <h4>Pre-Send Checklist</h4>
+          <ul>
+            <li>Is the information correct for this specific user?</li>
+            <li>Is this user-facing (not a private internal note)?</li>
+            <li>Is no personal data being shared with an unverified person?</li>
+            <li>Is no internal Packsify logic being exposed?</li>
+            <li>Is the information necessary to help the user?</li>
+          </ul>
+          <div class="callout warning">⚠️ Deleting a message in Intercom does NOT undo it — users also receive emails. Assume any sent message is already visible to the user.</div>
+          <h4>When a Mistake Happens</h4>
+          <p><strong>Minor mistakes</strong> (typo, wrong numbers): Don't delete. Acknowledge, apologize, provide correction.</p>
+          <p><strong>Serious mistakes</strong> (internal info, sensitive data, wrong user): Stop → Screenshot → Remove content → Add private note with explanation → Rewrite response in neutral language → Escalate to Team Lead.</p>
+          <h4>Sharing Info with Suppliers</h4>
+          <p>Approved info to share with suppliers: (1) Main account credentials (email + password), (2) Verification and backup codes, (3) Phone number if required for 2FA, (4) Order-specific instructions and screenshots.</p>
+          <p><strong>All supplier communication must happen in Intercom supplier chat or WeChat group channels. Direct messages are absolutely forbidden.</strong></p>
+        `
+      },
+      {
+        title: "Account Deletion Requests",
+        desc: "How to handle deletion requests — feedback, process, and SOP.",
+        quiz: ["What two things should you do before following the deletion SOP?"],
+        content: `
+          <h4>Handling the Request</h4>
+          <p>If a user requests account deletion, we fully honor their request. Before proceeding:</p>
+          <ol>
+            <li><strong>Optionally ask for feedback</strong> — frame it as helping Packsify improve, completely optional, no pressure.</li>
+            <li><strong>Then follow the Account Deletion SOP</strong> in ClickUp.</li>
+          </ol>
+          <h4>Data Rights Requests</h4>
+          <p>For data access, data copies, deletion, or opt-out from marketing: direct the user to <strong>legal@packsify.com</strong> from their registered Packsify email address.</p>
+          <p>This applies to all users including California residents (CCPA) and EU residents (GDPR).</p>
+          <div class="callout">💡 You are not the one who processes data deletion or exports — that is handled by the legal team. Your job is to direct them correctly and professionally.</div>
+        `
+      },
+      {
+        title: "Fraud & Risk Flags",
+        desc: "How to flag suspicious behavior in User Notes and when to escalate.",
+        quiz: ["What are the 3 fraud risk levels in User Notes?"],
+        content: `
+          <h4>Fraud Risk Levels in User Notes</h4>
+          <ul>
+            <li><strong>Low fraud risk</strong> — Minor concerns, one incident, monitor only</li>
+            <li><strong>Medium fraud risk</strong> — Multiple failed verifications, inconsistent behavior. Monitor future requests closely.</li>
+            <li><strong>High fraud risk</strong> — Active fraud indicators. Escalate to Team Lead immediately.</li>
+          </ul>
+          <h4>Red Flags to Flag</h4>
+          <ul>
+            <li>Multiple failed verification attempts</li>
+            <li>Requesting compensation for the same issue repeatedly</li>
+            <li>Inconsistent account ownership signals</li>
+            <li>Chargeback language in early conversations</li>
+            <li>Payment method changes combined with large orders</li>
+          </ul>
+          <div class="callout warning">⚠️ Immediately escalate to Team Lead if: a user is asked for data outside approved processes, sensitive info is shared unintentionally, a request feels excessive, or the user appears to be under 18.</div>
+          <h4>Children's Privacy</h4>
+          <p>Packsify services are not for individuals under 18. If underage use is discovered, immediately escalate to your Team Lead. They will: delete personal data, terminate the account, and refund unused credits where applicable.</p>
+        `
+      }
+    ]
+  },
+  {
+    num: "04", icon: "🔐", title: "Account Binding & Login",
+    desc: "Login methods, verification flows, 2FA, and common login issues.",
+    articles: [
+      {
+        title: "Login Methods Overview",
+        desc: "Supported and unsupported login types — and why.",
+        quiz: ["Name 3 unsupported login types and why they're not supported."],
+        content: `
+          <h4>How Packsify Access Works</h4>
+          <p>Packsify uses official Google Play and Apple gift cards to process in-game purchases. All purchases must be made inside the game — not in external app stores. This means we can only support login methods that give us direct access to the user's in-game account.</p>
+          <h4>Supported Login Methods</h4>
+          <ul>
+            <li><strong>Google (Gmail-based OAuth)</strong> — Most common. Requires managing 2FA codes.</li>
+            <li><strong>Facebook</strong> — Easy approval system, widely supported across games.</li>
+            <li><strong>FunPlus</strong> — Game-specific system used in SoS, Sea of Conquest.</li>
+            <li><strong>IM30</strong> — Used in Last Fortress: Underground.</li>
+            <li><strong>VK</strong> — Less common Eastern European option.</li>
+            <li><strong>IGG</strong> — IGG-published games.</li>
+            <li><strong>Email</strong> — Game-native email login (e.g. Last War: Survival).</li>
+          </ul>
+          <h4>NOT Supported — And Why</h4>
+          <ul>
+            <li><strong>Apple ID / Game Center</strong> — Does not give us access to the game account directly. Cannot complete purchases via gift cards.</li>
+            <li><strong>Google Play Games</strong> — Platform-bound. Cannot access the game account or in-game store.</li>
+            <li><strong>Biometric (Face ID / Fingerprint)</strong> — Cannot be bypassed remotely. Ask users to disable these.</li>
+          </ul>
+          <div class="callout warning">⚠️ If a user only has Apple ID or Google Play Games binding, we CANNOT process their order. Ask them to add a Google (Gmail) or Facebook bind from in-game Settings → Account.</div>
+        `
+      },
+      {
+        title: "Google Account Binding",
+        desc: "How Google-bound games work and the verification process.",
+        quiz: ["When might a phone number be required for Google login?"],
+        content: `
+          <h4>How Google Login Works</h4>
+          <p>User taps "Login with Google" → Google verifies identity → Google sends authentication token → Game server loads linked Game Account ID → Progress restored.</p>
+          <h4>Google 2FA Options (Best to Worst for CS)</h4>
+          <ol>
+            <li><strong>Passkeys / Security Keys</strong> — Most secure, but we cannot use these. User must provide an alternative.</li>
+            <li><strong>Google Prompt</strong> — Push notification to trusted phone. User approves login. Best for us — agent asks user to approve.</li>
+            <li><strong>Authenticator App</strong> — Generates time-based code. Agent must request code from user.</li>
+            <li><strong>Backup Codes</strong> — 10 pre-generated codes. Used for Fast Lane.</li>
+            <li><strong>Phone SMS</strong> — Last fallback. Code sent via text. User must share it quickly.</li>
+          </ol>
+          <div class="callout">💡 Google may randomly request the exact phone number connected to the account for extra verification during login — especially in games like Whiteout Survival or Kingshot. Always confirm the phone number with the user and include it in User Notes.</div>
+          <h4>Agent Recommendations to Users</h4>
+          <ul>
+            <li>Always advise users to have 2FA enabled for security</li>
+            <li>Suggest they add a Facebook bind as a backup (Settings → Account → Bind)</li>
+            <li>Ask them to disable biometric logins if active</li>
+            <li>Keep their phone nearby during orders for quick approval</li>
+          </ul>
+        `
+      },
+      {
+        title: "Facebook Binding",
+        desc: "Facebook login setup and common issues.",
+        quiz: [],
+        content: `
+          <h4>How Facebook Login Works</h4>
+          <p>Facebook uses a simpler approval system than Google. When login is triggered, Facebook sends a push notification to the user's Facebook app asking them to approve. This is often faster and less disruptive than Google's 2FA.</p>
+          <h4>Common Facebook Issues</h4>
+          <ul>
+            <li><strong>Push not received:</strong> Ask the user to check Facebook app notifications, ensure they are not in Do Not Disturb mode.</li>
+            <li><strong>Wrong Facebook account:</strong> Confirm the exact email/username bound to the game. Typos in Facebook accounts are common.</li>
+            <li><strong>User has Facebook but it's not bound to the game:</strong> They can bind it from in-game Settings → Account. They cannot switch an existing bind themselves — they'd need to contact game support.</li>
+          </ul>
+          <div class="callout">💡 Facebook binding is generally easier to work with than Google. If a user has Google only, proactively suggest adding Facebook as a backup during their next smooth order.</div>
+        `
+      },
+      {
+        title: "FunPlus & IM30 Binding",
+        desc: "Game-specific login systems: setup and edge cases.",
+        quiz: [],
+        content: `
+          <h4>FunPlus</h4>
+          <p>FunPlus is the in-house account system used by FunPlus-published games including State of Survival and Sea of Conquest. Users log in with their FunPlus email and password. There is no third-party OAuth — credentials are direct FunPlus account credentials.</p>
+          <p>Common issue: FunPlus accounts may have their own 2FA. Always confirm whether 2FA is enabled and request the code from the user if needed.</p>
+          <h4>IM30</h4>
+          <p>IM30 is the account system used in Last Fortress: Underground. Similar to FunPlus — direct login credentials. Less common but fully supported. Store the IM30 email and password in User Notes using the standard template.</p>
+          <h4>General Rules</h4>
+          <ul>
+            <li>Always record bind type in User Notes and update in-app</li>
+            <li>If a user has both FunPlus and Google, record both — note which is primary</li>
+            <li>If you're unsure which bind a game uses, check the game in Packsify app or consult the supplier</li>
+          </ul>
+        `
+      },
+      {
+        title: "2FA & Backup Codes",
+        desc: "How 2FA works, when codes are needed, and how Fast Lane helps.",
+        quiz: ["What is the purpose of Fast Lane?", "How many backup codes does Google generate?"],
+        content: `
+          <h4>What is 2FA?</h4>
+          <p>Two-Factor Authentication (2FA) is a security layer that requires a second verification step beyond the password. In the context of Packsify orders, it interrupts the login process and requires the user to provide a code, approve a notification, or confirm via another device.</p>
+          <h4>Types of 2FA Codes</h4>
+          <ul>
+            <li><strong>Verification codes (OTP):</strong> Time-sensitive, single-use. The supplier must request them from the user in real time. These create friction on every order.</li>
+            <li><strong>Backup codes:</strong> Pre-generated set of 10 codes. Not time-sensitive. Can be stored securely and used one at a time without user involvement.</li>
+          </ul>
+          <h4>What is Fast Lane?</h4>
+          <p>Fast Lane is the solution to 2FA friction for Prestige/eligible VIP clients. The user provides their 10 Google backup codes, which CS stores securely. For the next 10 orders, agents use one backup code per order — the user doesn't need to send a code each time.</p>
+          <div class="callout">💡 Fast Lane = No more waiting for verification codes on every VIP order. Fewer interruptions, faster fulfillment, smoother experience.</div>
+          <h4>Google Backup Codes</h4>
+          <p>Google generates exactly <strong>10 backup codes</strong> at a time. Each code is single-use. When a user is down to their last code, agents notify them and collect a new set.</p>
+          <ul>
+            <li>Log: Backup Codes / Fast Lane = Yes in VIP CRM after setup</li>
+            <li>Only for eligible/Prestige-level clients</li>
+            <li>Never store codes outside Intercom's secure VIP chat</li>
+          </ul>
+        `
+      },
+      {
+        title: "Common Login Issues",
+        desc: "Most frequent login failures and how to resolve each.",
+        quiz: ["A supplier says the password doesn't work. What's your first step?"],
+        content: `
+          <h4>Issue 1 — Wrong Email/Password</h4>
+          <p>Clients often provide incorrect Gmail or Facebook credentials. Double check: spelling, domain (@gmail.com vs @yahoo.com), extra spaces. Ask for a screenshot of their login screen if unclear.</p>
+          <h4>Issue 2 — Apple ID or Google Play Games Binding (Unsupported)</h4>
+          <p>These are platform-bound and we cannot access them. Suggest adding a Facebook or Google (Gmail) bind from game Settings → Account. Do NOT ask clients to unbind — they cannot do it themselves, and it would require contacting game support.</p>
+          <h4>Issue 3 — Unknown 2FA</h4>
+          <p>Some clients have 2FA active without knowing. Remind them to check for 2FA-connected devices and keep their phone nearby with notifications on during orders.</p>
+          <h4>Issue 4 — Biometric Login Active</h4>
+          <p>If Face ID or fingerprint is active, we cannot bypass it. Ask the user to disable biometric logins and enable email/SMS-based verification instead.</p>
+          <h4>Issue 5 — Password Not Copied Correctly</h4>
+          <p>Ask supplier if they copy-pasted (not typed) the password. Especially important with special characters. Only after confirming copy-paste should you contact the user about a potential password change.</p>
+          <h4>General Pre-Login Checklist</h4>
+          <ul>
+            <li>Confirm game, bind type, email spelling</li>
+            <li>Check if 2FA is enabled</li>
+            <li>Confirm exact pack wanted + purchase budget</li>
+            <li>Avoid assumptions — if anything is unclear, pause and clarify first</li>
+          </ul>
+        `
+      },
+      {
+        title: "Account Sharing Policy",
+        desc: "What Packsify authorizes vs. what is the user's own risk.",
+        quiz: ["Does Packsify require account sharing? What does it authorize instead?"],
+        content: `
+          <h4>Packsify's Approach</h4>
+          <p>Packsify does not require users to "share" their account in the traditional sense. Instead, Packsify facilitates in-game purchases using authorized login methods that users have explicitly connected to their game account (Google, Facebook, FunPlus, etc.).</p>
+          <h4>What Users Grant</h4>
+          <p>By placing an order, users authorize Packsify and its approved suppliers to: log into their game account using the credentials provided, complete the specified purchase(s), and log out immediately after completion.</p>
+          <h4>Security Confirmation per Order</h4>
+          <p>Suppliers must confirm: logout from user account, deletion of any saved login information from the device. Logging out ≠ swiping the game away. The supplier must click the explicit "Log Out" button inside the game. Document this in private notes: "Supplier confirmed proper account log out."</p>
+          <div class="callout warning">⚠️ If it's not confirmed and documented, it didn't happen. This is non-negotiable for every order.</div>
+        `
+      },
+      {
+        title: "Security Best Practices",
+        desc: "How agents protect user credentials during every interaction.",
+        quiz: ["Name 3 things agents never do with user credentials."],
+        content: `
+          <h4>What Agents NEVER Do</h4>
+          <ul>
+            <li>Share user credentials in public channels or direct messages</li>
+            <li>Store passwords outside Intercom's secure platform</li>
+            <li>Communicate with suppliers via direct messages (only group WeChat channels or Intercom supplier chat)</li>
+            <li>Disclose a user's credentials to anyone other than authorized suppliers</li>
+            <li>Guess or reveal a user's email without their confirmation</li>
+            <li>Ask for more data than strictly required for the order</li>
+          </ul>
+          <h4>What Agents Always Do</h4>
+          <ul>
+            <li>Update credentials in-app immediately when changed</li>
+            <li>Record all credential updates in User Notes with date and agent username</li>
+            <li>Confirm supplier has logged out after every order</li>
+            <li>Use only approved communication channels for sensitive information</li>
+          </ul>
+          <h4>Alternative Account Option</h4>
+          <p>For users concerned about security, suggest creating a separate Google or Facebook account linked to their game specifically for Packsify purchases. This keeps their main account private while still enabling our service.</p>
+        `
+      }
+    ]
+  },
+  {
+    num: "05", icon: "🌟", title: "New Client Onboarding",
+    desc: "First order flow, welcome experience, and new client metrics.",
+    articles: [
+      {
+        title: "New Client Journey Overview",
+        desc: "The full first-order experience from deposit to delivery.",
+        content: `
+          <h4>What Makes a New Client Different</h4>
+          <p>New clients haven't yet experienced Packsify's service. They have fragile trust, high expectations, and zero tolerance for a bad first impression. One bad first experience can kill the relationship permanently.</p>
+          <div class="callout warning">⚠️ A new client is defined as someone who has never placed a successful order. Once their first order completes, they exit "New" status — but if they've had only 2–3 orders, still treat them as new.</div>
+          <h4>The New Client Journey</h4>
+          <ol>
+            <li>Client discovers Packsify and deposits credits</li>
+            <li>CS proactively reaches out to welcome them and guide first order</li>
+            <li>Order is placed and assigned to the correct supplier</li>
+            <li>CS monitors delivery and keeps client informed</li>
+            <li>Order completes — CS follows up and asks how it went</li>
+            <li>Conversion is tracked in ClickUp New Clients Status list</li>
+          </ol>
+          <h4>Key Rule</h4>
+          <p>New clients are tracked weekly. Every deposit from a new client triggers a ClickUp task. Your job is to guide them from deposit → first successful order as smoothly as possible.</p>
+        `
+      },
+      {
+        title: "New Client Communication Standards",
+        desc: "Tone, welcome scripts, and expectation-setting for first-time clients.",
+        content: `
+          <h4>Tone for New Clients</h4>
+          <p>Warmer than usual. More educational. More proactive. New clients are often uncertain and need guidance — not just answers.</p>
+          <h4>Welcome Message Principles</h4>
+          <ul>
+            <li>Greet them personally and warmly</li>
+            <li>Acknowledge that this is their first time</li>
+            <li>Briefly explain how Packsify works (1–2 sentences)</li>
+            <li>Invite them to place their first order with your support</li>
+          </ul>
+          <div class="callout">💡 <strong>New clients don't read FAQs.</strong> They respond to agents. Be the guide — don't dump information, offer help.</div>
+          <h4>Expectation Setting</h4>
+          <ul>
+            <li>Explain the 3 steps: deposit → order → delivery</li>
+            <li>Mention approximate delivery time</li>
+            <li>Let them know you're available if anything comes up</li>
+            <li>After first order: celebrate it. Make it feel like a win.</li>
+          </ul>
+        `
+      },
+      {
+        title: "New Client ClickUp Tracking",
+        desc: "How to use the New Clients Status list in ClickUp for weekly reporting.",
+        content: `
+          <h4>Why We Track New Clients</h4>
+          <p>New client conversion is one of Packsify's most important metrics. The New Clients Status list in ClickUp shows every new depositor for the week and tracks whether they converted, didn't order, or cancelled.</p>
+          <h4>Status Categories</h4>
+          <ul>
+            <li><strong>Converted</strong> — Client placed and completed their first order</li>
+            <li><strong>Not Placed</strong> — Client deposited but has not yet ordered</li>
+            <li><strong>Cancelled</strong> — Client placed an order but cancelled it</li>
+            <li><strong>Refunded</strong> — Client requested and received a refund</li>
+          </ul>
+          <h4>Weekly Reporting Process</h4>
+          <p>Each week, the New Client Metrics Report is compiled using ClickUp data filtered by the week's date range. The conversion rate formula is:</p>
+          <div class="callout">📊 <strong>Conversion Rate</strong> = Converted ÷ (Total New Depositors) × 100</div>
+          <p>The report goes into the weekly CS report pack, owned by Trishia.</p>
+        `
+      },
+      {
+        title: "Not Placed First Order",
+        desc: "What to do when a new client deposits but doesn't place an order.",
+        content: `
+          <h4>The Problem</h4>
+          <p>A new client deposits credits but doesn't place their first order. This is a warm lead going cold. The goal is to re-engage them gently and guide them to their first order without pressure.</p>
+          <h4>Outreach Flow</h4>
+          <ol>
+            <li><strong>Day 0:</strong> Confirm deposit and welcome them proactively</li>
+            <li><strong>Day 1–2:</strong> If no order, send a soft follow-up — offer to help them place their first order</li>
+            <li><strong>Day 3–5:</strong> If still no response, send final gentle follow-up</li>
+          </ol>
+          <div class="callout">💡 Never push or pressure. Offer to help. "I wanted to check in and see if you have any questions before placing your first order — happy to guide you through it."</div>
+          <h4>After 3 Follow-Ups</h4>
+          <p>If the client hasn't responded after 3 attempts, mark them as "Not Placed" in ClickUp and close the outreach loop. They may return later on their own timeline.</p>
+        `
+      },
+      {
+        title: "Refund Requests from New Clients",
+        desc: "How to handle refund requests during the new client onboarding window.",
+        content: `
+          <h4>New Client Refund Window</h4>
+          <p>New clients who have not yet placed a successful order may request a refund of their deposited credits. These are handled by CS in coordination with the Payments | Back Office team.</p>
+          <h4>Process</h4>
+          <ol>
+            <li>Acknowledge and empathize — do not be defensive</li>
+            <li>Ask (optional and gently) what happened — this is feedback</li>
+            <li>Escalate to Payments | Back Office for refund approval</li>
+            <li>Communicate timeline: refunds typically process within 5–10 business days</li>
+            <li>Update ClickUp status to "Refunded"</li>
+          </ol>
+          <div class="callout warning">⚠️ Never process a refund without Payments | Back Office approval. CS communicates the outcome, Back Office approves and executes it.</div>
+          <h4>What To Say</h4>
+          <p>"I'm sorry this experience didn't meet your expectations. I'll escalate your refund request to our payments team who will review it and get back to you within [X] business days."</p>
+        `
+      }
+    ]
+  },
+  {
+    num: "06", icon: "💳", title: "Payments & Refunds",
+    desc: "Deposit types, payment issues, credit management, and refund policy.",
+    articles: [
+      {
+        title: "Payment Methods Overview",
+        desc: "Stripe (credit/debit), Revolut, and Crypto — how each works.",
+        content: `
+          <h4>Accepted Payment Methods</h4>
+          <ul>
+            <li><strong>Stripe (Credit/Debit Card)</strong> — Default method. Widely accepted. Subject to bank fraud checks for large purchases.</li>
+            <li><strong>Revolut</strong> — Faster, lower fees, no international surcharges. Part of SmartPay program.</li>
+            <li><strong>Cryptocurrency (USDT/USDC)</strong> — For users who prefer crypto. First payment requires identity verification. Part of SmartPay program.</li>
+          </ul>
+          <h4>SmartPay Purpose</h4>
+          <p>SmartPay helps users move to Revolut or Crypto to reduce payment friction, lower fees, and avoid bank blocks. It's proactively offered — especially to users experiencing Stripe issues or high-value VIP clients.</p>
+          <div class="callout">💡 <strong>SmartPay is not a product — it's a workflow.</strong> It means: reviewing the client's situation and connecting them to the payment method that works best for them.</div>
+          <h4>Stripe-Specific Notes</h4>
+          <ul>
+            <li>Banks may flag large orders as suspicious. Ask clients to pre-approve large transactions with their bank.</li>
+            <li>Clients showing Stripe as blocked should be flagged for SmartPay setup.</li>
+            <li>Never ask users for full card details through Intercom — they must enter them on the Packsify website.</li>
+          </ul>
+        `
+      },
+      {
+        title: "Credits System",
+        desc: "How credits work, value, expiration, and non-transferability.",
+        content: `
+          <h4>What Are Credits?</h4>
+          <p>Credits are Packsify's internal currency used to pay for in-game purchase services. 100 credits = approximately $1 value to the user.</p>
+          <h4>Key Rules</h4>
+          <ul>
+            <li>Credits are tied to one account — they cannot be transferred between accounts</li>
+            <li>Credits expire as per the Terms of Service (check current terms for exact duration)</li>
+            <li>Credits cannot be exchanged for cash</li>
+            <li>Compensation credits are always marked as "one-time exception" in User Notes</li>
+          </ul>
+          <div class="callout warning">⚠️ We use credits to own mistakes, show we value the relationship, and protect long-term spend from good users. We do NOT use credits to end conversations faster or buy CSAT scores.</div>
+          <h4>Manually Adding Credits</h4>
+          <p>When compensation or welcome credits are added manually: (1) Add credits in the Packsify app, (2) Log the addition in the Manually Added Credits Sheet with reason code and amount, (3) Add a note in User Notes in Intercom (date, agent, reason, amount).</p>
+        `
+      },
+      {
+        title: "Refund Policy & Process",
+        desc: "What qualifies for a refund, who approves it, and how CS communicates it.",
+        content: `
+          <h4>Scope</h4>
+          <p>Refunds may be full or partial, depending on unused credits. The Payments | Back Office team determines refund eligibility and amounts. CS communicates the decision and processes approved refunds.</p>
+          <h4>When CS Escalates to Payments | Back Office</h4>
+          <ul>
+            <li>Multiple disputes or chargebacks from the same user</li>
+            <li>Payment behavior appears inconsistent or unclear</li>
+            <li>A payment method restriction is required</li>
+            <li>Client requests a detailed financial or transaction-level explanation</li>
+          </ul>
+          <h4>CS Responsibilities in Refund Cases</h4>
+          <ul>
+            <li>Explain next steps and timelines clearly to the client</li>
+            <li>Process approved refunds for unused credits once confirmed</li>
+            <li>Use approved templates when communicating decisions</li>
+            <li>Document all communication and refund actions in Intercom</li>
+          </ul>
+          <div class="callout">💡 Workflow: Customer contacts CS → CS reviews + escalates to Back Office → Back Office decides → CS communicates outcome → Back Office may email detailed transaction info if needed.</div>
+        `
+      },
+      {
+        title: "Chargeback & Dispute Handling",
+        desc: "What happens when a client files a chargeback and CS responsibilities.",
+        content: `
+          <h4>What is a Chargeback?</h4>
+          <p>A chargeback occurs when a client disputes a charge directly with their bank or payment provider rather than requesting a refund through Packsify. This is a serious event that triggers financial, legal, and operational consequences.</p>
+          <h4>CS Responsibilities When Chargeback Language Appears</h4>
+          <ol>
+            <li>Tag the conversation with <strong>DB_Payment</strong> (Deal-Breaker tag)</li>
+            <li>Escalate immediately to Team Lead via #cs-escalations</li>
+            <li>Do NOT offer credits or refunds without Back Office approval</li>
+            <li>Do NOT accuse the client of fraud</li>
+            <li>Use neutral language: "Your payment issue is currently under review."</li>
+          </ol>
+          <div class="callout warning">⚠️ If a user has tags <strong>Fraud_Suspected</strong> or <strong>Fraud_Confirmed</strong>: No compensation, no manual workarounds, user stays Stripe-blocked. Escalate to #cs-escalations and tag @backbone-support.</div>
+          <h4>Strict Rules for Fraud-Flagged Users</h4>
+          <ul>
+            <li>Wait for confirmation from backbone-support before helping further</li>
+            <li>Never mention fraud, chargebacks, or stolen cards to the user</li>
+            <li>Never offer credits or goodwill gestures</li>
+            <li>Never improvise — follow the exact escalation path</li>
+          </ul>
+        `
+      },
+      {
+        title: "Compensation Matrix Overview",
+        desc: "How compensation is determined — user segment, severity, and principle.",
+        content: `
+          <h4>What the Compensation Matrix Is</h4>
+          <p>The Compensation Matrix helps determine if, when, and how much compensation is appropriate when something goes wrong. Its purpose is to protect long-term relationships, maintain consistency across agents, and make decisions based on who the user is and how severe the impact was.</p>
+          <h4>Two Inputs</h4>
+          <ul>
+            <li><strong>Who the user is</strong> — their compensation segment (New, Core, Elite Low, Elite Medium, Elite High, Royalty)</li>
+            <li><strong>How bad the issue was</strong> — severity (Low, Medium, High, Critical)</li>
+          </ul>
+          <div class="callout">📊 <strong>Compensation Calculator:</strong> Use <a href="https://alisa-biz.github.io/cs-compensation" target="_blank" style="color:var(--accent2)">alisa-biz.github.io/cs-compensation</a> — select issue reason, user tier, and severity. Compensation is auto-calculated.</div>
+          <h4>Core Principle</h4>
+          <p>Compensation is never the product. We win by being predictable, competent, honest, and protective of our best users. Credits are an investment in long-term value — not a shortcut to close tickets faster.</p>
+          <h4>Agent Workflow</h4>
+          <ol>
+            <li>Understand the issue</li>
+            <li>Stabilize and resolve (fix, replace, expedite, escalate)</li>
+            <li>Prevent recurrence</li>
+            <li>Apply compensation if warranted (after issue is addressed)</li>
+          </ol>
+        `
+      },
+      {
+        title: "User Segmentation for Compensation",
+        desc: "The 6 compensation segments — R30 spend bands and overlays.",
+        content: `
+          <h4>Compensation Segments (Rolling 30-Day Spend)</h4>
+          <ul>
+            <li><strong>New</strong> — First purchase. Extremely fragile trust. One bad experience = gone forever. Treat with extra care.</li>
+            <li><strong>Core</strong> — R30 spend $500–$999. Loyal users who may grow with good support.</li>
+            <li><strong>Elite Low</strong> — R30 spend $1,000–$1,999. Smaller whales we want to keep.</li>
+            <li><strong>Elite Medium</strong> — R30 spend $2,000–$3,499. Strong, valuable users.</li>
+            <li><strong>Elite High</strong> — R30 spend $3,500+. Very strong whales. Worth extra care to protect.</li>
+            <li><strong>Royalty</strong> — Single $10,000+ purchase. Go above and beyond.</li>
+          </ul>
+          <h4>Overlays</h4>
+          <ul>
+            <li><strong>NonICP</strong> — Difficult behavior (rude, manipulative, credit-fishing) but not yet fraud. Treat per segment, but do not reward abuse.</li>
+            <li><strong>Fraud/Suspicious</strong> — Tags: Fraud_Suspected or Fraud_Confirmed. Immediate escalation required. Zero compensation until backbone-support confirms.</li>
+          </ul>
+          <div class="callout">💡 Segments are visible in the Packsify app and VIP CRM. Always check before deciding on compensation.</div>
+        `
+      },
+      {
+        title: "Disputes & Refund Communication SOP",
+        desc: "How CS and Payments | Back Office coordinate on disputes.",
+        content: `
+          <h4>Team Responsibilities</h4>
+          <p><strong>CS handles:</strong> Direct client interaction, communicating decisions, processing approved refunds for unused credits, escalating to Back Office when needed.</p>
+          <p><strong>Payments | Back Office handles:</strong> Transaction analysis, refund approvals, payment restrictions, chargeback documentation, direct email communication on complex financial matters.</p>
+          <h4>Workflow</h4>
+          <ol>
+            <li>Client contacts CS about payment, refund, dispute, or chargeback</li>
+            <li>CS reviews case and gathers initial information</li>
+            <li>CS escalates to Payments | Back Office if payment review is required</li>
+            <li>Back Office reviews and makes a decision</li>
+            <li>CS communicates outcome to client using approved wording</li>
+            <li>Back Office may email client with detailed transaction information if needed</li>
+          </ol>
+          <div class="callout warning">⚠️ CS never makes independent decisions on refunds, payment method restrictions, or chargeback outcomes. These are Back Office decisions.</div>
+        `
+      }
+    ]
+  },
+  {
+    num: "07", icon: "👑", title: "VIP & Prestige Club",
+    desc: "Prestige membership, Fast Lane, SmartPay, and VIP activation.",
+    articles: [
+      {
+        title: "Prestige Club Overview",
+        desc: "What the Prestige Club is and who it's for.",
+        content: `
+          <h4>What is the Prestige Club?</h4>
+          <p>The Prestige Club is Packsify's premium membership tier for high-value, recurring clients. It provides an elevated experience through faster service, fewer friction points, and dedicated support — with the goal of increasing retention and lifetime value.</p>
+          <h4>Fast Lane</h4>
+          <p>Fast Lane is a Prestige feature designed to reduce 2FA friction during VIP orders — especially during busy events or multiple consecutive orders. It works by securely storing 10 backup codes, reducing the need for users to stay glued to their phone during order processing.</p>
+          <div class="callout">💡 Offer Fast Lane when: User is Prestige AND mentions busy events, multiple orders, 2FA fatigue, or repeated VIP orders in short timeframes.</div>
+          <h4>SmartPay</h4>
+          <p>SmartPay optimizes the payment setup for VIP users — offering Revolut or Crypto to avoid payment interruptions, reduce bank fees, and improve payment predictability for high-value purchases.</p>
+          <div class="callout warning">⚠️ Do NOT offer Fast Lane or SmartPay to non-eligible users, during active complaints, or when the conversation is emotionally charged.</div>
+        `
+      },
+      {
+        title: "Fast Lane — Full Positioning Guide",
+        desc: "How to position Fast Lane, with scripts, follow-ups, and closing language.",
+        content: `
+          <h4>When to Offer Fast Lane</h4>
+          <ul>
+            <li>User is a Prestige member</li>
+            <li>User mentions: busy events, multiple orders, 2FA fatigue, having to stay glued to their phone</li>
+            <li>High-traffic event periods</li>
+          </ul>
+          <h4>Positioning Statement</h4>
+          <div class="callout">
+            "Hey [Name], I see that the Prestige feature <strong>Fast Lane</strong> is not enabled on your account. It reduces 2FA steps during VIP orders, especially when events get busy.<br>
+            The main benefit is not having to stay glued to your phone — orders move more smoothly with fewer interruptions.<br>
+            Would you like me to tell you more about it and set it up for you? It only takes a few minutes."
+          </div>
+          <h4>Follow-Up</h4>
+          <p>"Just circling back so I don't leave this hanging 🙂 Would you like me to set up Fast Lane now, or leave things as they are for now?"</p>
+          <h4>Closing</h4>
+          <p>"I'll pause on this for now 👍 If you ever want to reduce 2FA interruptions during VIP orders, Fast Lane is available anytime — just let me know."</p>
+          <h4>After Setup</h4>
+          <p>Tag conversation with <strong>targetFastLane</strong> and update VIP CRM with Fast Lane activation date.</p>
+        `
+      },
+      {
+        title: "SmartPay — Full Positioning Guide",
+        desc: "When and how to position SmartPay with scripts and closing language.",
+        content: `
+          <h4>When to Offer SmartPay</h4>
+          <ul>
+            <li>User experiences payment failures, interrupted or declined payments, or extra bank fees</li>
+            <li>User is making repeat purchases or using multiple payment methods</li>
+            <li>Agent notices inconsistent payment behavior or known friction with certain banks</li>
+          </ul>
+          <h4>Positioning Statement</h4>
+          <div class="callout">
+            "Hey [Name]. I noticed your Prestige payment setup isn't active yet. It helps you choose the best payment method to avoid interruptions and extra bank fees.<br>
+            Want me to check what payment method is the best for your account? It would take us just a couple of minutes to set everything up."
+          </div>
+          <h4>Language to Use</h4>
+          <ul>
+            <li>"Helps avoid…"</li>
+            <li>"Reduces the chance of…"</li>
+            <li>"Makes payments more predictable"</li>
+            <li>"If you want / if it makes sense"</li>
+          </ul>
+          <h4>After Setup</h4>
+          <p>Tag conversation with <strong>targetSmartPay</strong> and update VIP CRM with SmartPay activation date and method selected.</p>
+        `
+      },
+      {
+        title: "VIP SLA & Response Standards",
+        desc: "Response time targets and service standards for Prestige/VIP clients.",
+        content: `
+          <h4>VIP Performance Targets</h4>
+          <ul>
+            <li><strong>First Response Time:</strong> ≤ 1 minute</li>
+            <li><strong>VIP Order Fulfillment:</strong> ≤ 13 minutes</li>
+            <li><strong>VIP SLA:</strong> 90%</li>
+            <li><strong>VIP CSAT:</strong> 96% minimum</li>
+          </ul>
+          <div class="callout warning">⚠️ Never let a VIP client wait more than 1 minute for a first response. If handling multiple conversations, acknowledge the VIP first — even a brief "I'm looking into this now" counts.</div>
+          <h4>Why This Matters</h4>
+          <p>Packsify's top 20% of clients account for 88.6% of revenue. A serious whale for Packsify is a user spending thousands per month, consistently over months or years. One such user can easily be worth $50k–$100k+ in lifetime profit. Losing that relationship over one bad order is a major failure.</p>
+          <h4>VIP Interaction Principles</h4>
+          <ul>
+            <li>Named, personal communication — use their name always</li>
+            <li>Explicit ownership language: "I'll take this myself"</li>
+            <li>No macros without personalization for VIP clients</li>
+            <li>24-hour follow-up on any DB-tagged VIP conversation</li>
+          </ul>
+        `
+      }
+    ]
+  },
+  {
+    num: "08", icon: "📢", title: "Proactive Initiatives",
+    desc: "Fast Lane, SmartPay, and Review outreach — scripts, targets, and tagging.",
+    articles: [
+      {
+        title: "Proactive Initiatives Overview",
+        desc: "What the 3 initiatives are, why they exist, and the guiding principles.",
+        content: `
+          <h4>The Three Initiatives</h4>
+          <ul>
+            <li><strong>Fast Lane</strong> — Help eligible Prestige users store 10 backup codes to reduce 2FA friction during VIP orders.</li>
+            <li><strong>SmartPay</strong> — Connect users to Revolut or Crypto for lower fees and higher payment success rates.</li>
+            <li><strong>Reviews (Trustpilot / Google)</strong> — Request a review after a successful or positive resolution.</li>
+          </ul>
+          <h4>The Why</h4>
+          <p>Fast Lane and SmartPay remove friction before it becomes a problem. Instead of reacting to blockers, we gain more control over outcomes. Reviews generate social proof and reinforce good interactions. These initiatives are contextual, not scripted — you introduce them when the timing feels natural and value-driven.</p>
+          <div class="callout">💡 This initiative is proactive but non-pushy, value-led, integrated into real conversations, and optional per conversation based on your judgment.</div>
+          <h4>This Initiative is NOT</h4>
+          <ul>
+            <li>Mandatory in every conversation</li>
+            <li>A replacement for service quality</li>
+            <li>A scripted sales motion</li>
+          </ul>
+        `
+      },
+      {
+        title: "Timing & Eligibility Guidelines",
+        desc: "Best moments to introduce initiatives — and when to absolutely avoid it.",
+        content: `
+          <h4>Best Moments to Introduce Initiatives</h4>
+          <ul>
+            <li>During order processing</li>
+            <li>While resolving a payment or verification step</li>
+            <li>After removing friction or unblocking an issue</li>
+            <li>After a positive acknowledgment from the user</li>
+          </ul>
+          <h4>Never Introduce When</h4>
+          <ul>
+            <li>During escalations</li>
+            <li>When the user is frustrated</li>
+            <li>Before the core issue is resolved</li>
+            <li>When the conversation is already complex or emotionally charged</li>
+            <li>For non-eligible users (non-Prestige for Fast Lane)</li>
+          </ul>
+          <div class="callout warning">⚠️ Service quality always comes first. Do not rush conversations to hit initiative targets. CSAT and user sentiment override initiative attempts.</div>
+          <h4>Eligibility Checks</h4>
+          <p>Before positioning any initiative, check the VIP CRM: Is the user in process of placing/completing an order? No unresolved escalation? Are they eligible for Fast Lane? Have they already left a review? Have they already set up SmartPay?</p>
+        `
+      },
+      {
+        title: "Targets, Tagging & Reporting",
+        desc: "Monthly targets, how to tag successful initiatives, and what counts.",
+        content: `
+          <h4>Monthly Targets (per agent)</h4>
+          <ul>
+            <li>5 SmartPay activations</li>
+            <li>5 Fast Lane activations</li>
+            <li>5 Trustpilot/Google Reviews</li>
+          </ul>
+          <h4>Tracking Logic</h4>
+          <ul>
+            <li>Targets are set monthly but tracked quarterly — a weaker month can be compensated by a stronger following month</li>
+            <li>Consistency across the quarter is what matters, not any single month</li>
+            <li>December is a trial/learning period — no targets counted</li>
+          </ul>
+          <h4>Required Tags (Mandatory)</h4>
+          <ul>
+            <li><strong>targetSmartPay</strong> — Only when SmartPay is successfully accepted</li>
+            <li><strong>targetFastLane</strong> — Only when Fast Lane is successfully accepted</li>
+            <li><strong>targetReviews</strong> — Only when review is successfully posted (you have screenshot)</li>
+          </ul>
+          <div class="callout warning">⚠️ Only tag when the initiative was successfully accepted. Missing or incorrect tags = action not counted. One conversation may have multiple tags if multiple initiatives succeeded.</div>
+        `
+      },
+      {
+        title: "Review Macros — All Scripts",
+        desc: "rv-1 through rv-9: full text of every review macro.",
+        content: `
+          <h4>rv-1 — Initial Review Request</h4>
+          <div class="callout">"Hey there! 😊 I hope you're enjoying your order so far! Before you jump into your game, I wanted to ask if you'd be open to leaving us a quick review. As a thank you, we'll add some bonus credits to your account! If you're interested, just let me know and I'll send you the review links."</div>
+          <h4>rv-2 — Review Links (Android/Web users)</h4>
+          <div class="callout">"Awesome! Here are the review links: Trustpilot (trustpilot.com/review/packsify.com) and Google Play. When did you start using Packsify? What do you love most? Once you've posted, please send a screenshot so we can add your bonus credits right away!"</div>
+          <h4>rv-2.2 — Review Links (iOS users)</h4>
+          <div class="callout">"Awesome! Here is the review link: Trustpilot only (no Google Play for iOS). Same prompts apply — once posted, send a screenshot for your bonus credits!"</div>
+          <h4>rv-3 — Screenshot Received</h4>
+          <div class="callout">"We've received your screenshot and will add your bonus credits shortly. Your feedback means the world to us and helps make Packsify even better. ❤️"</div>
+          <h4>rv-4 / rv-9 — Order Complete + Credits Added</h4>
+          <div class="callout">"Thanks again for your wonderful review — your bonus credits have been added, and your order is now complete. We truly appreciate your support! ❤️"</div>
+          <h4>rv-5 / rv-5.2 — No Response (Close)</h4>
+          <div class="callout">"We understand life gets busy! We'll close the review request for now. If you ever wish to leave a review in the future, the links are always available. Thank you for being a valued customer! 🩵"</div>
+          <h4>rv-6 — Shift Lead Check-In (During Order)</h4>
+          <div class="callout">"Hi there! [Agent name] from Customer Support here 🙏 I hope you're having a wonderful day and your order is running smoothly. Could you let us know if everything's going well? 😊"</div>
+          <h4>rv-7 — Shift Lead Review Ask (After Positive Response)</h4>
+          <div class="callout">"That's fantastic to hear! 😍 We're thrilled you're enjoying your experience. Would you be open to leaving us a quick review? Your feedback helps others know what to expect from our service."</div>
+        `
+      },
+      {
+        title: "Shift Lead Review Flow",
+        desc: "How Shift Leads proactively initiate the review process during smooth orders.",
+        content: `
+          <h4>When to Initiate (Shift Lead Responsibility)</h4>
+          <p>This flow is for clients whose orders are progressing smoothly — no support tickets needed. Since these clients are likely delighted, initiate the review flow proactively.</p>
+          <h4>Step-by-Step Flow</h4>
+          <ol>
+            <li><strong>When order is placed:</strong> After supplier logs in without needing a code, Shift Lead sends <strong>rv-6</strong> (check-in)</li>
+            <li><strong>Client indicates satisfaction:</strong> Shift Lead sends <strong>rv-7</strong> (review ask)</li>
+            <li><strong>Client willing to review:</strong> For Android/web users → send <strong>rv-2</strong>. For iOS → send <strong>rv-2.2</strong></li>
+            <li><strong>Client posts review + sends screenshot:</strong> Shift Lead sends <strong>rv-3</strong>, adds bonus credits, updates Credits Sheet</li>
+            <li><strong>Final step:</strong> Send <strong>rv-9</strong> to complete the process</li>
+          </ol>
+          <div class="callout warning">⚠️ Use the correct macros as listed — otherwise necessary tags won't be added and the initiative won't be counted. If client doesn't respond: use rv-5 or rv-5.2 depending on device.</div>
+        `
+      }
+    ]
+  },
+  {
+    num: "09", icon: "⭐", title: "Reviews Management",
+    desc: "Review collection flows, macros, reporting, and platform access.",
+    articles: [
+      {
+        title: "Reviews Overview",
+        desc: "Why reviews matter, what platforms we target, and overall process.",
+        content: `
+          <h4>Why Reviews Matter</h4>
+          <p>Reviews on Trustpilot and Google Play are Packsify's primary source of social proof. They help new potential clients feel confident, give us feedback to improve, and demonstrate the quality of our service publicly.</p>
+          <h4>Target Platforms</h4>
+          <ul>
+            <li><strong>Trustpilot</strong> — Available for all users</li>
+            <li><strong>Google Play Store</strong> — Available for Android users only</li>
+          </ul>
+          <h4>When to Ask for a Review</h4>
+          <ul>
+            <li>After a successful, smooth order completion</li>
+            <li>After a positive interaction or resolution</li>
+            <li>When the client has expressed satisfaction</li>
+          </ul>
+          <h4>When NOT to Ask</h4>
+          <ul>
+            <li>During or immediately after an issue or complaint</li>
+            <li>When the client seems frustrated or neutral</li>
+            <li>Before the order is complete</li>
+          </ul>
+          <div class="callout">💡 Reviews should feel like a natural moment in a positive interaction — never a transaction. Only ask after you're confident the client is happy.</div>
+        `
+      },
+      {
+        title: "Google Play Console Access",
+        desc: "How to access and navigate reviews in Google Play Console.",
+        content: `
+          <h4>Access Level</h4>
+          <p>Only <strong>Shift Leads</strong> have access to the Google Play Console. This is a restricted tool — do not attempt to access it without proper permissions.</p>
+          <h4>Navigation Steps</h4>
+          <ol>
+            <li>Log into the Google Play Console</li>
+            <li>On the Home page, select the <strong>Packsify App</strong></li>
+            <li>Navigate to <strong>Ratings & Reviews</strong> → click <strong>Reviews</strong></li>
+          </ol>
+          <div class="callout warning">⚠️ Your Google Play Console interface may look different depending on your access level — but the Reviews section should always be findable. Be careful with date range filters to ensure no reviews are missed.</div>
+          <h4>Daily Review Check</h4>
+          <p>The daily reviews report covers all new reviews for that day. Check both Google Play Console and Trustpilot. The report is due by 18:00 CET each day and posted in the designated Discord channel.</p>
+        `
+      },
+      {
+        title: "Team Feedback Form SOP",
+        desc: "Biweekly team feedback form — creation, distribution, analysis, and reporting.",
+        content: `
+          <h4>Overview</h4>
+          <p><strong>Owner:</strong> Trishia | <strong>Oversight:</strong> Co-leads and Team Leads | <strong>Frequency:</strong> Every 2 weeks, sent every Thursday</p>
+          <h4>Purpose</h4>
+          <p>Continuously gather structured insights from the CS team to understand team sentiment, effectiveness of processes, feedback on communication and leadership, and suggestions for operational improvements.</p>
+          <h4>Step 1 — Prepare the Form</h4>
+          <ul>
+            <li>Copy the standard Google Form template</li>
+            <li>Add 1–3 custom questions based on key events/changes that week</li>
+            <li>Name format: "Feedback Form – [Date Range]" (e.g., Feedback Form – Mar 18 to Mar 24)</li>
+            <li>Add Co-Leads and Team Leads as <strong>Editors</strong> (not Responders)</li>
+          </ul>
+          <h4>Step 2 — Share</h4>
+          <ul>
+            <li>Send via Google Form to all teammates with response tracking enabled</li>
+            <li>Post Discord announcement in #ps-board with the form link</li>
+          </ul>
+          <h4>Step 3 — Monitor + Remind</h4>
+          <p>Check who hasn't submitted. Send polite email follow-up reminders.</p>
+          <h4>Step 4 — Analyze + Report</h4>
+          <p>Identify patterns, actionable points, supplier feedback, and sentiment trends. Summarize key findings in the feedback report doc and present to Team Lead at weekly planning.</p>
+        `
+      }
+    ]
+  },
+  {
+    num: "10", icon: "📊", title: "Reporting",
+    desc: "Shift reports, weekly CS reports, VIP metrics, and feedback forms.",
+    articles: [
+      {
+        title: "Reporting Overview",
+        desc: "Who owns which report, cadence, and key metrics tracked.",
+        content: `
+          <h4>Reporting Cadence</h4>
+          <ul>
+            <li><strong>Daily:</strong> Shift Report (L2 or TL)</li>
+            <li><strong>Weekly (Friday):</strong> Intercom Performance Report (Trishia), VIP Client Metrics Report (Yerevan), Reviews Report (Shift Lead)</li>
+            <li><strong>Biweekly (Thursday):</strong> Team Feedback Form (Trishia)</li>
+          </ul>
+          <h4>Key Metrics Tracked</h4>
+          <ul>
+            <li>CSAT (overall + VIP)</li>
+            <li>First Response Time (FRT)</li>
+            <li>Average Resolution Time (ART)</li>
+            <li>VIP SLA %</li>
+            <li>New client conversions</li>
+            <li>Reviews collected (Trustpilot + Google Play)</li>
+            <li>Initiative targets (SmartPay, Fast Lane, Reviews)</li>
+          </ul>
+          <h4>Report Links</h4>
+          <ul>
+            <li>Manually Added Credits Sheet — CS Compensation 2026 tab</li>
+            <li>VIP CRM — Fast Lane, SmartPay activation tracking</li>
+            <li>New Clients Status List in ClickUp</li>
+          </ul>
+        `
+      },
+      {
+        title: "Shift Report",
+        desc: "Template, required fields, owner, and a sample completed report.",
+        content: `
+          <h4>Purpose</h4>
+          <p>The shift report ensures smooth communication during shift transitions. It's the primary handover tool — every incoming shift should be able to start immediately with no confusion.</p>
+          <div class="callout">📋 <strong>Owner:</strong> L2 Agent (or TL on TL shifts). Must be completed before the shift ends.</div>
+          <h4>Required Fields</h4>
+          <ul>
+            <li>Date / Shift name / L2 name / L1 name</li>
+            <li>Available Suppliers: Dahu [x/x] and SoS [x/x]</li>
+            <li>Bugs / System Errors: description + action taken</li>
+            <li>Order Issues: Order ID + client + action taken</li>
+            <li>Payment Issues: Payment ID + client + action taken</li>
+            <li>Notes for the Next Shift</li>
+          </ul>
+          <h4>Sample Completed Report</h4>
+          <div class="callout">
+            <strong>SHIFT REPORT</strong><br>
+            Date: 07/27/2025 | Shift: Intermediate Shift 2 | L2: Gryffindor | L1: Julia<br><br>
+            Available Suppliers: Dahu 1/2 | SoS 6/7 — Both working well<br><br>
+            Order Issues: BUN-xxxxxxxxxx — Client paid $5 less. Action: deducted 500 credits, supplier settling on WeChat.<br><br>
+            Payment Issues: CRE-xxxxxxxxxx — Credits not added after Stripe. Action: verified + manually added.<br><br>
+            Bugs: Gray screen on order page — ongoing.<br>
+            Notes for Next Shift: Shift was busy.
+          </div>
+        `
+      },
+      {
+        title: "Deal-Breaker Tickets",
+        desc: "How to identify, tag, and handle Deal-Breaker conversations.",
+        content: `
+          <h4>What is a Deal-Breaker Ticket?</h4>
+          <p>Any customer interaction where the outcome can directly lead to churn, chargeback, reputational damage, or executive escalation if not handled correctly within a defined time window. Not "angry users." Not "low CSAT." Not volume.</p>
+          <h4>5 Deal-Breaker Types</h4>
+          <ul>
+            <li><strong>DB_Payment</strong> — Payment taken but items not delivered, double charge, chargeback language</li>
+            <li><strong>DB_Account</strong> — Account locked, banned, compromised, or "I can't log in"</li>
+            <li><strong>DB_Trust</strong> — "I don't trust…", "this feels like a scam", public review threats</li>
+            <li><strong>DB_Legal</strong> — Lawyers, regulators, media, app store review threats</li>
+            <li><strong>DB_ServiceFail</strong> — System/supplier failure explicitly acknowledged, "we messed this up"</li>
+          </ul>
+          <div class="callout">⚡ Tag at first meaningful signal — not at meltdown. One DB tag max per ticket. Tags are signals, not failures.</div>
+          <h4>After Tagging</h4>
+          <ul>
+            <li>Follow up within 24 hours (snooze conversation)</li>
+            <li>Use named, personal communication with explicit ownership language</li>
+            <li>No macros without personalization</li>
+            <li>Escalate to #cs-escalations if TL support needed</li>
+          </ul>
+          <h4>Bi-Weekly DB Review</h4>
+          <p>At the CS bi-weekly call, ask: What caused it? Was it preventable? Did support contain or escalate the damage?</p>
+        `
+      },
+      {
+        title: "CS Schedule & PTO Policy",
+        desc: "How the 2026 scheduling system works — rules, deadlines, and PTO process.",
+        content: `
+          <h4>2026 Scheduling System</h4>
+          <p>Effective February 2026. Schedules are created <strong>monthly</strong> (previously 2 weeks at a time). The goal is better coverage, reduced vacant shifts, and clearer planning.</p>
+          <h4>Shift Selection Rules</h4>
+          <ul>
+            <li><strong>First to fill, first reserved</strong> — whoever fills a slot first, reserves it</li>
+            <li>Once a shift is full, it's unavailable for additional reservations</li>
+            <li>Agents coordinate adjustments directly with each other — management assists only if needed</li>
+          </ul>
+          <h4>Schedule Deadline</h4>
+          <p>All agents must fill in their schedule by the <strong>last Wednesday before the next scheduling period</strong>. Example: February 2026 schedule must be completed by January 28, 2026.</p>
+          <h4>PTO Rules</h4>
+          <ul>
+            <li>Contact Team Lead first to confirm no PTO slots are already taken for those dates</li>
+            <li>Urgent sick absences: notify Team Lead ASAP, then L2 on duty if TL unavailable</li>
+            <li>National holidays (New Year's Day, Christmas, Easter): working agents receive double pay</li>
+          </ul>
+          <div class="callout">💡 Contact: Trishia (PH Team Lead) or Yerevan (SRB Team Lead) for scheduling questions.</div>
+        `
+      }
+    ]
+  },
+  {
+    num: "11", icon: "⚖️", title: "Policies & Legal",
+    desc: "Data protection, privacy, communication guidelines, and PR/legal handling.",
+    articles: [
+      {
+        title: "Data Protection Overview",
+        desc: "GDPR, CCPA, and what each means for CS agents daily.",
+        content: `
+          <h4>Why Data Protection Matters</h4>
+          <p>CS agents handle sensitive personal data every day: emails, passwords, phone numbers, payment information. Mishandling any of this creates legal risk for Packsify and personal risk for the user.</p>
+          <h4>What You Must Never Disclose</h4>
+          <ul>
+            <li>Internal systems, tools, logic, workflows, or processes</li>
+            <li>Personal data belonging to another individual</li>
+            <li>Any information not required to resolve the user's specific request</li>
+            <li>Full email addresses, passwords, or phone numbers to unverified parties</li>
+          </ul>
+          <h4>Pre-Send Checklist (Every Message)</h4>
+          <ul>
+            <li>Is the information correct for THIS specific user?</li>
+            <li>Is no personal data being shared with an unverified person?</li>
+            <li>Is no internal Packsify logic being exposed?</li>
+            <li>Is the information necessary to help the user?</li>
+          </ul>
+          <div class="callout warning">⚠️ Deleting a message in Intercom does NOT undo it — users also receive emails. Assume any sent message is already visible to the user.</div>
+          <h4>When a Mistake Happens</h4>
+          <p><strong>Serious mistakes (internal info, wrong user, sensitive data):</strong> Stop → Screenshot → Remove content → Add private note with explanation → Rewrite in neutral language → Escalate to Team Lead immediately.</p>
+        `
+      },
+      {
+        title: "Sharing Information with Suppliers",
+        desc: "What's approved to share, how, and what is absolutely forbidden.",
+        content: `
+          <h4>Approved Information to Share with Suppliers</h4>
+          <ol>
+            <li>Main account credentials (email + password)</li>
+            <li>Verification and backup codes</li>
+            <li>Phone number (if required for 2FA only)</li>
+            <li>Order-specific instructions and screenshots</li>
+          </ol>
+          <h4>Approved Communication Channels</h4>
+          <ul>
+            <li><strong>Intercom supplier chat</strong></li>
+            <li><strong>Designated WeChat group channels</strong></li>
+          </ul>
+          <div class="callout warning">⚠️ Direct messages with suppliers are absolutely forbidden. All supplier communication must happen in group channels or Intercom. If a supplier DMs you directly, do not respond — redirect them to the correct channel.</div>
+          <h4>After Every Order</h4>
+          <p>Suppliers must confirm: logout from user account, and deletion of any saved login information from their device. Document in private notes: "Supplier confirmed proper account log out."</p>
+        `
+      },
+      {
+        title: "PR, Promotion & Career Inquiries",
+        desc: "How to handle partnership pitches, promo offers, and job inquiries via Intercom.",
+        content: `
+          <h4>PR / Partnership Pitches</h4>
+          <p>When someone reaches out via Intercom proposing collaborations, influencer partnerships, media features, or sponsorships:</p>
+          <div class="callout">
+            "Hi [Name], Thank you for reaching out. Our Customer Support team is not able to process partnership or PR requests directly. We'll be happy to pass your proposal along to the appropriate team for internal review. Should there be an opportunity to collaborate, our team will be in touch."
+          </div>
+          <p>Then: Summarize the proposal in #cs-escalations and tag the Growth team. Include user email and Intercom ticket number.</p>
+          <h4>Promotional / Sales Pitches</h4>
+          <p>When vendors contact us to sell services (SEO, software, paid ads, etc.):</p>
+          <div class="callout">
+            "Hi [Name], Thank you for contacting Packsify. Our Customer Support team is not the appropriate point of contact for vendor proposals. We'll be happy to pass your offer along to the appropriate team. We review new proposals periodically and will reach out if there is a potential fit."
+          </div>
+          <h4>Career Inquiries</h4>
+          <div class="callout">
+            "Hi [Name], Thank you for your interest in joining Packsify. All current job openings can be found at www.packsify.com/careers. We encourage you to apply directly through the website so our HR team can properly review your application."
+          </div>
+        `
+      },
+      {
+        title: "CS/IT Workflow & Incident Escalation",
+        desc: "4 issue buckets, troubleshooting steps, and when to escalate to IT.",
+        content: `
+          <h4>4 Issue Buckets</h4>
+          <ul>
+            <li><strong>Bucket 1 — User confusion/training gap:</strong> Troubleshoot → educate → close. If unresolved → Bug Report.</li>
+            <li><strong>Bucket 2 — Recurring issues with known patterns:</strong> Troubleshoot → if unresolved → Bug Report. Do NOT ping IT.</li>
+            <li><strong>Bucket 3 — Known manual-intervention issues:</strong> Skip TS → Bug Form → No IT ping unless large-scale. (Stuck orders, account deletion errors, App Check token failures, email verification failures)</li>
+            <li><strong>Bucket 4 — Urgent incidents:</strong> Immediate IT ping required. (System down, payment flow broken, login failures at scale, security risks, data integrity issues)</li>
+          </ul>
+          <h4>5 Troubleshooting Steps (Bucket 1 & 2 only)</h4>
+          <ol>
+            <li>Update to latest app version</li>
+            <li>Log out → clear cache → log in again</li>
+            <li>Disable VPN / switch network</li>
+            <li>Android users: try web version</li>
+            <li>Delete + reinstall the app</li>
+          </ol>
+          <div class="callout warning">⚠️ Golden Rules: Do NOT ping IT unless issue meets urgent criteria. Always attempt troubleshooting first unless it's a known manual-intervention case. Document everything in Bug Form before escalating.</div>
+          <h4>IT Contact Schedule (CET)</h4>
+          <ul>
+            <li>10:00–17:00: Boris (+381 60 149 6094), Aleksa (+381 64 406 3248)</li>
+            <li>14:00–21:00: Bryan (+51 954 125 627)</li>
+          </ul>
+        `
+      }
+    ]
+  },
+  {
+    num: "12", icon: "🎮", title: "Game & App Operations",
+    desc: "Adding new games, order management, IT escalation, and app updates.",
+    articles: [
+      {
+        title: "Game Testing SOP",
+        desc: "Speed-critical workflow for adding new games — L2 owned end-to-end.",
+        content: `
+          <h4>Core Principle</h4>
+          <p>Game availability directly impacts revenue. Every hour of delay is a missed sales opportunity. New game requests are high-priority, fast-track tasks. No waiting, no batching, no silent handoffs.</p>
+          <div class="callout warning">⚠️ Once a game is requested, one L2 agent owns the process end-to-end until the game is either live or explicitly rejected due to testing/security failure.</div>
+          <h4>Timeline</h4>
+          <ul>
+            <li><strong>Minute 0:</strong> Game requested. L2 checks Packsify App + ClickUp Game Testing List immediately.</li>
+            <li><strong>Within 5 minutes:</strong> If not currently supported, inform user ("We're testing this game and will get back to you ASAP") + send testing request to both suppliers (Dahu + SoS WeChat groups).</li>
+            <li><strong>Within 30min–1 hour:</strong> Actively chase supplier results. Escalate to TL if supplier delays. Review results and submit Game Testing Request Form immediately.</li>
+            <li><strong>Immediately after approval:</strong> Trigger design request. No waiting.</li>
+            <li><strong>As soon as design is ready:</strong> Upload game to app. Use temporary workaround if currency is still pending. Go live ASAP.</li>
+            <li><strong>Post-launch:</strong> Notify suppliers game is live (both WeChat groups). Follow up with user.</li>
+          </ul>
+          <h4>Unacceptable Delays</h4>
+          <ul>
+            <li>Waiting "until tomorrow" to send testing requests</li>
+            <li>Waiting 30+ min without following up with suppliers</li>
+            <li>Leaving required forms unsubmitted after test results received</li>
+            <li>Waiting on design when an approved temporary workaround exists</li>
+          </ul>
+        `
+      },
+      {
+        title: "Order Management Best Practices",
+        desc: "ETA communication, supplier log-out, proactive updates, prioritization.",
+        content: `
+          <h4>Before Every Order</h4>
+          <ul>
+            <li>Confirm game, bind type, email/password accuracy</li>
+            <li>Confirm 2FA status and user availability</li>
+            <li>Confirm exact pack and purchase budget</li>
+            <li>If anything is unclear — pause and clarify before proceeding</li>
+          </ul>
+          <h4>During Orders</h4>
+          <ul>
+            <li>VIP orders must complete within ≤13 minutes</li>
+            <li>If delayed: proactively inform the client with a concrete ETA — never make them chase you</li>
+            <li>Monitor supplier progress, especially during high-traffic events</li>
+          </ul>
+          <h4>After Every Order</h4>
+          <ol>
+            <li>Log out fully from user account</li>
+            <li>Clear session</li>
+            <li>Confirm pack/credits received</li>
+            <li>Inform user</li>
+            <li>Document actions taken in private notes: "Supplier confirmed proper account log out"</li>
+          </ol>
+          <div class="callout warning">⚠️ Logging out ≠ swiping the game away. Suppliers must click the explicit "Log Out" button inside the game. If it's not confirmed and documented, it didn't happen.</div>
+        `
+      },
+      {
+        title: "Login Troubleshooting Scenarios",
+        desc: "Common login failures and purchase issues — causes and resolutions.",
+        content: `
+          <h4>Common Login Issues</h4>
+          <ul>
+            <li><strong>Wrong account loads:</strong> Confirm exact Gmail, check for multiple accounts, supplier must log out fully and retry with correct login</li>
+            <li><strong>2FA blocking login:</strong> Ask for live code, enter immediately. If device approval needed, user must approve on their device. If repeated failure, pause and retry after cooldown.</li>
+            <li><strong>"Suspicious Login" / Security Lock:</strong> User must complete security check. Ask them to confirm login approval. Retry after confirmation.</li>
+            <li><strong>Account already logged in:</strong> Inform user beforehand that login will disconnect them. Coordinate timing. Log out immediately after purchase.</li>
+            <li><strong>Password not working:</strong> Confirm copy-paste (not typed). If still failing, contact user — they may have changed it.</li>
+          </ul>
+          <h4>Common Purchase Issues</h4>
+          <ul>
+            <li><strong>Pack not visible:</strong> Confirm server, event timing, game version. Request screenshot.</li>
+            <li><strong>Currency mismatch:</strong> Always confirm payment currency before purchasing. Agents must pay close attention to displayed currency, store country, and user's expected currency.</li>
+            <li><strong>Wrong pack by supplier:</strong> Verify logs. If confirmed mistake → follow compensation matrix.</li>
+          </ul>
+          <div class="callout">💡 <strong>Agent Mistakes to Avoid:</strong> Assuming Google Play = Google bind. Assuming Apple email = Apple login. Telling client to "just unbind it." Ignoring 2FA as root cause.</div>
+        `
+      },
+      {
+        title: "Receipt Storage System",
+        desc: "How receipts are stored and why every order needs proper documentation.",
+        content: `
+          <h4>Purpose</h4>
+          <p>Proper receipt storage is essential for dispute resolution, chargeback defense, compliance, and audit trails. Every order must be documented with its receipt — both in the Packsify system and in the designated storage sheet.</p>
+          <h4>What Gets Stored</h4>
+          <ul>
+            <li>Google Play / App Store official receipts</li>
+            <li>Stripe payment confirmations</li>
+            <li>Revolut transfer screenshots</li>
+            <li>Crypto transaction IDs</li>
+          </ul>
+          <h4>When Receipts Are Missing</h4>
+          <p>If a user requests a receipt and we don't have it: provide the Apple/Google receipt to the user and ask them to escalate to in-game support. Document the gap in the private notes and flag to Team Lead.</p>
+          <div class="callout warning">⚠️ From December 2025, all new orders must have receipts collected and stored at the time of order. Pre-December gaps are handled via goodwill where appropriate.</div>
+        `
+      }
+    ]
+  }
+];
+
+let currentModuleIndex = null;
+let currentArticleIndex = null;
+
+// BUILD NAV
+function buildNav() {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = modules.map((m, i) => `
+    <div class="nav-section">
+      <div class="nav-module" id="navModule${i}" onclick="toggleNavModule(${i})">
+        <span class="nav-module-num">${m.num}</span>
+        <span class="nav-module-name">${m.title}</span>
+        <span class="nav-module-arrow">›</span>
+      </div>
+      <div class="nav-articles" id="navArticles${i}">
+        ${m.articles.map((a, j) => `
+          <span class="nav-article" id="navArticle${i}_${j}" onclick="showArticle(${i}, ${j})">${a.title}</span>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleNavModule(i) {
+  const articles = document.getElementById(`navArticles${i}`);
+  const module = document.getElementById(`navModule${i}`);
+  const isOpen = articles.classList.contains('open');
+  // close all
+  document.querySelectorAll('.nav-articles').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.nav-module').forEach(el => el.classList.remove('open', 'active'));
+  if (!isOpen) {
+    articles.classList.add('open');
+    module.classList.add('open', 'active');
+  }
+}
+
+// BUILD MODULES GRID
+function buildGrid() {
+  const grid = document.getElementById('modulesGrid');
+  grid.innerHTML = modules.map((m, i) => `
+    <div class="module-card" onclick="showModule(${i})">
+      <div class="module-card-header">
+        <span class="module-num">Module ${m.num}</span>
+        <span class="module-icon">${m.icon}</span>
+      </div>
+      <div class="module-title">${m.title}</div>
+      <div class="module-desc">${m.desc}</div>
+      <div class="module-footer">
+        <span class="module-count">${m.articles.length} articles</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button onclick="event.stopPropagation();openQuiz(${i})" style="background:var(--accent-glow);border:1px solid var(--accent)33;border-radius:6px;padding:4px 10px;color:var(--accent2);font-size:11px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;letter-spacing:0.3px;">QUIZ</button>
+          <span class="module-arrow">→</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showHome() {
+  document.getElementById('homePage').style.display = 'block';
+  document.getElementById('modulePage').classList.remove('active');
+  document.getElementById('articlePage').classList.remove('active');
+  document.getElementById('searchPage').classList.remove('active');
+  document.getElementById('searchInput').value = '';
+  setProgress(0);
+  currentModuleIndex = null;
+  currentArticleIndex = null;
+  document.querySelectorAll('.nav-module').forEach(el => el.classList.remove('active'));
+}
+
+function showModule(i) {
+  currentModuleIndex = i;
+  currentArticleIndex = null;
+  const m = modules[i];
+
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('articlePage').classList.remove('active');
+  document.getElementById('searchPage').classList.remove('active');
+
+  document.getElementById('modulePageBreadcrumb').textContent = m.title;
+  document.getElementById('modulePageNum').textContent = `Module ${m.num}`;
+  document.getElementById('modulePageTitle').textContent = m.title;
+  document.getElementById('modulePageTag').textContent = `${m.icon}  ${m.articles.length} articles`;
+
+  const list = document.getElementById('modulePageArticles');
+  list.innerHTML = m.articles.map((a, j) => `
+    <div class="article-item" onclick="showArticle(${i}, ${j})">
+      <div class="article-num">${String(j+1).padStart(2,'0')}</div>
+      <div class="article-info">
+        <div class="article-title">${a.title}</div>
+        <div class="article-desc">${a.desc}</div>
+      </div>
+      <span class="article-chevron">›</span>
+    </div>
+  `).join('');
+
+  document.getElementById('modulePage').classList.add('active');
+  setProgress(((i+1)/modules.length)*30);
+
+  // Update nav
+  toggleNavModule(i);
+  window.scrollTo(0, 0);
+}
+
+function showCurrentModule() {
+  if (currentModuleIndex !== null) showModule(currentModuleIndex);
+}
+
+function showArticle(i, j) {
+  currentModuleIndex = i;
+  currentArticleIndex = j;
+  const m = modules[i];
+  const a = m.articles[j];
+
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('modulePage').classList.remove('active');
+  document.getElementById('searchPage').classList.remove('active');
+
+  document.getElementById('articleModuleBreadcrumb').textContent = m.title;
+  document.getElementById('articleBreadcrumb').textContent = a.title;
+
+  const quizHtml = a.quiz && a.quiz.length > 0 ? `
+    <div class="quiz-section">
+      <div class="quiz-label">🧠 Knowledge Check</div>
+      ${a.quiz.map((q, k) => `
+        <div class="quiz-q">
+          <span class="quiz-q-num">Q${k+1}</span>
+          <span>${q}</span>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
+  document.getElementById('articleContent').innerHTML = `
+    <h3>${a.title}</h3>
+    <div class="module-tag" style="margin-bottom:28px">${m.icon} Module ${m.num} — ${m.title}</div>
+    <div class="divider"></div>
+    <div class="article-body">
+      ${a.content ? a.content : `<p>${a.desc}</p><div class="callout">📖 Full content for this article is coming soon. Check back after the next update.</div>`}
+    </div>
+    ${quizHtml}
+  `;
+
+  document.getElementById('articlePage').classList.add('active');
+  setProgress(30 + ((j+1)/m.articles.length)*70);
+
+  // Update nav
+  document.querySelectorAll('.nav-article').forEach(el => el.classList.remove('active'));
+  const navA = document.getElementById(`navArticle${i}_${j}`);
+  if (navA) navA.classList.add('active');
+
+  window.scrollTo(0, 0);
+}
+
+function setProgress(pct) {
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// SEARCH
+const allItems = [];
+modules.forEach((m, i) => {
+  m.articles.forEach((a, j) => {
+    allItems.push({ moduleIndex: i, articleIndex: j, moduleTitle: m.title, articleTitle: a.title, desc: a.desc, path: `Module ${m.num} › ${m.title}` });
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  if (!q) { showHome(); return; }
+
+  const results = allItems.filter(item =>
+    item.articleTitle.toLowerCase().includes(q) ||
+    item.moduleTitle.toLowerCase().includes(q) ||
+    item.desc.toLowerCase().includes(q)
+  );
+
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('modulePage').classList.remove('active');
+  document.getElementById('articlePage').classList.remove('active');
+
+  const searchPage = document.getElementById('searchPage');
+  searchPage.classList.add('active');
+  document.getElementById('searchLabel').textContent = `${results.length} result${results.length !== 1 ? 's' : ''} for "${this.value.trim()}"`;
+
+  const list = document.getElementById('searchResultsList');
+  if (results.length === 0) {
+    list.innerHTML = '<div style="color:var(--text-dim);font-size:14px;padding:20px 0">No articles found. Try different keywords.</div>';
+  } else {
+    list.innerHTML = results.map(r => {
+      const hi = (str) => str.replace(new RegExp(q, 'gi'), m => `<mark>${m}</mark>`);
+      return `
+        <div class="search-result-item" onclick="showArticle(${r.moduleIndex}, ${r.articleIndex})">
+          <div class="search-result-title">${hi(r.articleTitle)}</div>
+          <div class="search-result-path">${r.path}</div>
+        </div>
+      `;
+    }).join('');
+  }
+});
+
+// INIT
+buildNav();
+buildGrid();
+
+// PASSWORD GATE
+const PASSWORD = 'cspacksify@2026'; // ← Change this to your team password
+
+function checkPassword() {
+  const input = document.getElementById('gateInput');
+  const error = document.getElementById('gateError');
+  if (input.value === PASSWORD) {
+    document.getElementById('gateOverlay').classList.add('hidden');
+    sessionStorage.setItem('kb_auth', '1');
+  } else {
+    input.classList.add('error');
+    error.textContent = 'Incorrect password. Try again.';
+    input.value = '';
+    setTimeout(() => input.classList.remove('error'), 400);
+  }
+}
+
+document.getElementById('gateInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkPassword();
+  document.getElementById('gateError').textContent = '';
+});
+
+// Auto-unlock if already authenticated this session
+if (sessionStorage.getItem('kb_auth') === '1') {
+  document.getElementById('gateOverlay').classList.add('hidden');
+}
+
+// ============================================================
+// QUIZ ENGINE
+// ============================================================
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx6JUz8Iw5PNPiC6BAA07TdXnOFDxW2U7ALYbrsW7ojEzOAeYu1CAGjyrfvnIwU0Zc1/exec';
+const PASS_THRESHOLD = 0.9;
+
+const quizData = {
+  0: { // Module 01 - Getting Started (5 questions)
+    questions: [
+      { q: "What is Packsify's core service?", options: ["A game publisher", "An independent order facilitation service", "A payment processor", "A game development company"], answer: 1 },
+      { q: "Which tool is the primary customer communication platform?", options: ["Discord", "WhatsApp", "Intercom", "WeChat"], answer: 2 },
+      { q: "What is the target First Response Time for VIP clients?", options: ["5 minutes", "2 minutes", "30 minutes", "1 minute"], answer: 3 },
+      { q: "Who does an L1 agent escalate complex issues to?", options: ["Directly to IT", "L2 / Team Lead", "The supplier", "Finance team"], answer: 1 },
+      { q: "What is the VIP CSAT target?", options: ["90%", "85%", "96%", "100%"], answer: 2 }
+    ]
+  },
+  1: { // Module 02 - Shift Operations (5 questions)
+    questions: [
+      { q: "Who writes the shift report?", options: ["L1 agent", "L2 agent", "Team Lead", "Any available agent"], answer: 1 },
+      { q: "What is the primary purpose of the shift report?", options: ["Track agent performance", "Ensure smooth shift transitions", "Log customer complaints", "Report revenue"], answer: 1 },
+      { q: "On a standard 2-person shift, who handles operational oversight?", options: ["L1", "L2", "Both equally", "Team Lead remotely"], answer: 1 },
+      { q: "What must be included in every handover?", options: ["Personal notes only", "Pending issues, bugs, order issues, and notes for next shift", "Just a status update", "Only VIP client notes"], answer: 1 },
+      { q: "When can shift task assignments be adjusted?", options: ["Never — fixed for the shift", "Only with Team Lead approval", "Mid-shift by mutual agreement", "Only at the start of shift"], answer: 2 }
+    ]
+  },
+  2: { // Module 03 - Customer Account Management (10 questions)
+    questions: [
+      { q: "What triggers an account Status change to 'Verified'?", options: ["Manual update by agent", "After a successful order is completed", "When the client deposits", "When the client emails support"], answer: 1 },
+      { q: "Should you ever manually update the account Status field?", options: ["Yes, when the client requests it", "Yes, after every order", "Never — it updates automatically", "Only with Team Lead approval"], answer: 2 },
+      { q: "What must you always do before adding new info to User Notes?", options: ["Ask the Team Lead", "Review existing notes first", "Clear all old notes", "Notify the supplier"], answer: 1 },
+      { q: "Which bind types does Packsify support? (Select best answer)", options: ["Apple ID, Google, Facebook", "Google, Facebook, FunPlus, IM30, VK, IGG", "Google, Apple, Steam, Facebook", "Email, Phone, Google"], answer: 1 },
+      { q: "A user asks for their full email address. What can you share?", options: ["The full email address", "Nothing at all", "Only a hint e.g. 'ends in @gmail.com'", "First 3 characters only"], answer: 2 },
+      { q: "When updating a password, what two systems must you update?", options: ["Intercom and ClickUp", "User Notes in Intercom AND in-app", "Google Sheet and ClickUp", "Discord and Intercom"], answer: 1 },
+      { q: "What are the 3 fraud risk levels in User Notes?", options: ["Red, Yellow, Green", "Low, Medium, High", "Level 1, 2, 3", "Suspected, Confirmed, Cleared"], answer: 1 },
+      { q: "Are Intercom User Notes ever shared with users or suppliers?", options: ["Yes, with suppliers only", "Yes, with users on request", "Never — strictly internal", "Only with Team Lead approval"], answer: 2 },
+      { q: "What is the correct path to update a password in-app?", options: ["Settings → Users → Edit", "Manage Customer → Search → Game Accounts → Edit", "Dashboard → Accounts → Password Reset", "Admin → Users → Modify"], answer: 1 },
+      { q: "Before contacting a user about a wrong password, what must you confirm first?", options: ["The supplier copy-pasted (not typed) the password", "The order is still pending", "The client is online", "The password was set in the last 24 hours"], answer: 0 }
+    ]
+  },
+  3: { // Module 04 - Account Binding & Login (10 questions)
+    questions: [
+      { q: "Which login type is NOT supported by Packsify?", options: ["Google", "Facebook", "Apple ID", "FunPlus"], answer: 2 },
+      { q: "What is the purpose of Fast Lane?", options: ["Speed up payments", "Pre-save Google backup codes to avoid login delays", "Fast-track VIP orders", "Priority supplier routing"], answer: 1 },
+      { q: "How many backup codes does Google generate?", options: ["5", "8", "10", "12"], answer: 2 },
+      { q: "Which games use Google SMS verification?", options: ["Sea of Conquest, Last Fortress", "Whiteout Survival, Kingshot", "State of Survival, Last War", "All games equally"], answer: 1 },
+      { q: "A supplier says the password doesn't work. What is your FIRST step?", options: ["Contact the user immediately", "Confirm supplier copy-pasted, not typed the password", "Reset the password", "Escalate to Team Lead"], answer: 1 },
+      { q: "Does Packsify require users to share their account?", options: ["Yes, it's mandatory", "No — it requests authorization to complete purchases only", "Only for VIP clients", "Only for new clients"], answer: 1 },
+      { q: "Which bind type is used for Last War?", options: ["Facebook", "Google", "Email", "FunPlus"], answer: 2 },
+      { q: "Which bind type is used for Whiteout Survival?", options: ["Email only", "FunPlus or VK", "Facebook or Google", "IM30 or IGG"], answer: 2 },
+      { q: "Name one thing agents must NEVER do with user credentials.", options: ["Store them in User Notes", "Share them via Intercom supplier chat", "Send them via direct message to a supplier", "Update them in-app"], answer: 2 },
+      { q: "What should you do if a user changed their password mid-order?", options: ["Cancel the order", "Update User Notes only", "Update User Notes + update in-app + notify supplier", "Only notify the supplier"], answer: 2 }
+    ]
+  },
+  4: { // Module 05 - New Client Onboarding (5 questions)
+    questions: [
+      { q: "What date filter do you use in ClickUp for the weekly new client report?", options: ["Order Date", "First Deposit Date", "Account Creation Date", "First Login Date"], answer: 1 },
+      { q: "What is the formula for the new client conversion rate?", options: ["Deposited ÷ Delivered × 100", "Delivered ÷ Deposited × 100", "Orders ÷ Total Clients × 100", "Delivered ÷ Total Clients × 100"], answer: 1 },
+      { q: "What tone should be used with new clients?", options: ["Formal and corporate", "Warm, welcoming, and expectation-setting", "Brief and transactional", "Casual and informal"], answer: 1 },
+      { q: "What important step must you remember after pulling Intercom filters for new client data?", options: ["Save the report", "Remove the filters", "Export to CSV", "Share with Team Lead"], answer: 1 },
+      { q: "Which ClickUp list is used to track new client statuses?", options: ["New Clients Dashboard", "New Clients-Status list", "Client Tracker", "First Orders list"], answer: 1 }
+    ]
+  },
+  5: { // Module 06 - Payments & Refunds (10 questions)
+    questions: [
+      { q: "Within how many days must a refund request be submitted?", options: ["1 day", "3 days", "7 days", "14 days"], answer: 1 },
+      { q: "Where do refund requests get submitted?", options: ["support@packsify.com", "Intercom ticket", "legal@packsify.com", "Via Discord"], answer: 2 },
+      { q: "When do credits expire?", options: ["1 year after last use", "2 years after last use", "6 months after purchase", "Never"], answer: 1 },
+      { q: "Can credits be transferred between accounts?", options: ["Yes, with Team Lead approval", "Yes, always", "No — non-transferable", "Only between family accounts"], answer: 2 },
+      { q: "What are 3 consequences of a fraudulent chargeback?", options: ["Warning, suspension, review", "Immediate account closure, credits forfeited, possible legal action", "Refund denied, account flagged, credit reduction", "Order cancelled, account suspended, fee charged"], answer: 1 },
+      { q: "What tab in the Finance Sheet do you use for VIP order data?", options: ["VIP Clients", "VIP Orders", "Prestige Orders", "Premium Tab"], answer: 1 },
+      { q: "What reasons do you select when logging a review credit award?", options: ["Review Bonus / App Reward", "Trustpilot–Award / Play Store–Award", "Client Bonus / Store Review", "Goodwill / Review Incentive"], answer: 1 },
+      { q: "Which payment methods does Packsify accept?", options: ["PayPal, Credit Card, Bank Transfer", "Credit Card (Stripe), Revolut, Cryptocurrency", "Cash, Card, Crypto", "Stripe, PayPal, Apple Pay"], answer: 1 },
+      { q: "What must you check before confirming a first crypto payment?", options: ["Exchange rate only", "Wallet address, amount, and transaction confirmation", "Client's account balance", "Team Lead approval"], answer: 1 },
+      { q: "What qualifies for a refund according to Packsify's policy?", options: ["Any dissatisfied client", "If the order was not fulfilled in the official store", "If the client changes their mind", "If delivery took longer than expected"], answer: 1 }
+    ]
+  },
+  6: { // Module 07 - VIP & Prestige Club (10 questions)
+    questions: [
+      { q: "What are the 4 goals of the Prestige Club?", options: ["Revenue, Retention, Reviews, Referrals", "Loyalty, Revenue, Retention, Brand Advocacy", "CSAT, Revenue, VIP Upgrades, Retention", "Speed, Quality, Loyalty, Revenue"], answer: 0 },
+      { q: "What motivates Prestige clients more than discounts?", options: ["Speed of delivery", "Exclusive access, recognition, and personalized experience", "Lower prices", "Bonus credits"], answer: 1 },
+      { q: "How many times a day can you contact a Proactive Support client?", options: ["3 times", "Once", "Twice", "No limit"], answer: 1 },
+      { q: "What is the Golden Rule of Proactive Support?", options: ["Always follow up within 1 hour", "Never contact a client more than once per day", "Check in before the client needs to reach out", "Always offer a discount first"], answer: 2 },
+      { q: "What 4 types of people are in the private Prestige Discord?", options: ["Agents, Suppliers, Leads, VIPs", "VIP clients, Packsify team, Partners, Top spenders", "Moderators, Admins, VIPs, Guests", "CS team, Sales team, VIPs, Investors"], answer: 1 },
+      { q: "When is a client moved to the Quarterly Progress category?", options: ["After 3 months of inactivity", "After completing their first order", "After ongoing relationship management past initial phases", "After spending over $1,000"], answer: 2 },
+      { q: "Name the 4 CRM fields to log after VIP activation.", options: ["Name, Email, Game, Date", "Fast Lane status, SmartPay status, Contact Date, Notes", "Activation type, Agent, Date, Status", "Order ID, Credits, Game, Platform"], answer: 1 },
+      { q: "When must VIP CRM logging happen?", options: ["Within 24 hours", "Same day", "By end of week", "After the next order"], answer: 1 },
+      { q: "Who handles a message about a $1,499 deposit education in VIP Discord?", options: ["CS team", "Sales team", "Team Lead", "L1 agent"], answer: 1 },
+      { q: "What is Fast Lane?", options: ["A priority order queue", "Pre-saved Google backup codes to eliminate login delays", "A VIP payment method", "A supplier fast-track system"], answer: 1 }
+    ]
+  },
+  7: { // Module 08 - Proactive Initiatives (10 questions)
+    questions: [
+      { q: "Name the 3 proactive initiatives.", options: ["Reviews, Fast Lane, SmartPay", "CSAT, Reviews, VIP Upgrades", "Fast Lane, Deposits, Reviews", "SmartPay, Discord, Fast Lane"], answer: 0 },
+      { q: "Name 3 situations where you should NEVER introduce an initiative.", options: ["During order delivery, after CSAT, on slow days", "When client is complaining, during an unresolved issue, when client is clearly in a hurry", "On weekends, during peak hours, on first contact", "When client is new, when VIP, when balance is low"], answer: 1 },
+      { q: "Are initiative targets tracked monthly or quarterly?", options: ["Monthly", "Quarterly", "Weekly", "Annually"], answer: 1 },
+      { q: "What is December's role in the target system?", options: ["Highest target month", "Excluded — no targets in December", "Double points month", "Review and reset month"], answer: 1 },
+      { q: "A client accepted both Fast Lane and a review. How many tags do you add?", options: ["1 combined tag", "2 tags — one for each initiative", "3 tags including a completion tag", "No tags needed if both accepted"], answer: 1 },
+      { q: "When should you NOT add a target tag?", options: ["When client declines", "When the initiative was never discussed", "When client is a new signup", "When it's after 6pm"], answer: 1 },
+      { q: "What does the Text Blaze shortcut `;fastlane` do?", options: ["Opens the Fast Lane setup form", "Inserts the Fast Lane positioning script automatically", "Tags the conversation in Intercom", "Sends a Fast Lane invite to the client"], answer: 1 },
+      { q: "What do you check before sending rv-1 (first review invitation)?", options: ["Client's account balance", "Whether the client appears visibly dissatisfied AND whether the 'Review Completed' tag exists", "Whether the order is VIP", "Whether supplier has logged out"], answer: 1 },
+      { q: "Which macro does a Shift Lead send when the supplier logs in without a code?", options: ["rv-1", "rv-6", "rv-3", "rv-9"], answer: 1 },
+      { q: "How do you prevent duplicate outreach to the same user in campaigns?", options: ["Check the CRM manually", "Use Intercom segments and filter by existing target tags", "Ask Team Lead to verify", "Check ClickUp task history"], answer: 1 }
+    ]
+  },
+  8: { // Module 09 - Reviews Management (5 questions)
+    questions: [
+      { q: "When should you NEVER ask for a review?", options: ["After a smooth order", "When the client appears visibly dissatisfied", "After a Fast Lane setup", "When the order is VIP"], answer: 1 },
+      { q: "How many credits are awarded for BOTH Trustpilot + Google Play reviews?", options: ["500 credits", "750 credits", "1,000 credits", "1,500 credits"], answer: 2 },
+      { q: "What is the daily cut-off time for the reviews report?", options: ["12:00 CET", "15:00 CET", "18:00 CET", "20:00 CET"], answer: 2 },
+      { q: "What is the difference between rv-2 and rv-2.2?", options: ["rv-2 is for new clients, rv-2.2 for VIP", "rv-2 includes both Trustpilot + Google Play (app), rv-2.2 is Trustpilot only (web)", "rv-2 is automated, rv-2.2 is manual", "rv-2 is for Android, rv-2.2 is for iOS"], answer: 1 },
+      { q: "Who has access to Google Play Console?", options: ["All CS agents", "L1 agents only", "Shift Leads only", "Team Leads only"], answer: 2 }
+    ]
+  },
+  9: { // Module 10 - Reporting (5 questions)
+    questions: [
+      { q: "Who owns the weekly Intercom Performance Report?", options: ["Yerevan", "Trishia", "The L2 on duty", "Team Lead"], answer: 1 },
+      { q: "Who owns the VIP Client Metrics Report?", options: ["Trishia", "Yerevan", "The Shift Lead", "Head of CS"], answer: 1 },
+      { q: "What date range does the weekly CS performance report cover?", options: ["Monday to Sunday", "Friday to Thursday", "Saturday to Friday", "Sunday to Saturday"], answer: 1 },
+      { q: "Which SVS weeks are typically the busiest?", options: ["Week 1 and 2", "Week 2 and 3", "Week 3 and 4 (SVS War + Alliance Championship)", "Week 4 only"], answer: 2 },
+      { q: "How often is the Team Feedback Form sent?", options: ["Weekly", "Every 2 weeks", "Monthly", "Quarterly"], answer: 1 }
+    ]
+  },
+  10: { // Module 11 - Policies & Legal (10 questions)
+    questions: [
+      { q: "Name the 5 data protection regulations relevant to Packsify.", options: ["GDPR, CCPA, LGPD, PIPEDA, UK GDPR", "GDPR, SOC2, ISO27001, HIPAA, CCPA", "GDPR, CCPA, COPPA, FERPA, PIPEDA", "EU GDPR, US Privacy Act, Brazil LGPD, Canada PIPEDA, China PIPL"], answer: 0 },
+      { q: "Why can't deleting an Intercom message fix a disclosure mistake?", options: ["Deletion is not possible in Intercom", "Messages are permanent records and users also receive email copies", "IT must approve all deletions", "Only Team Leads can delete messages"], answer: 1 },
+      { q: "Where do data access/deletion requests get directed?", options: ["support@packsify.com", "The CS Team Lead", "legal@packsify.com from the registered email", "Via Intercom ticket"], answer: 2 },
+      { q: "Which 2 platforms are approved for sharing info with suppliers?", options: ["Discord and WhatsApp", "Intercom supplier chat and WeChat group channels", "Email and Slack", "ClickUp and Intercom"], answer: 1 },
+      { q: "What happens if a supplier contacts you directly via DM?", options: ["Respond normally", "Redirect to WeChat groups; if persistent, escalate to Team Lead", "Block them", "Share info via DM this one time"], answer: 1 },
+      { q: "What is the maximum hint you can give about a user's email?", options: ["Full email address", "First 5 characters", "Domain only e.g. '@gmail.com'", "Ends in @[domain] e.g. 'ends in @gmail.com'"], answer: 3 },
+      { q: "What must a client provide to claim the Ban Protection Guarantee?", options: ["Just a screenshot of the ban", "Official ban documentation + purchase records + proof of no cheats", "Account credentials and order ID", "A written request to legal@packsify.com"], answer: 1 },
+      { q: "What are the 3 consequences of a fraudulent chargeback?", options: ["Warning, fee, account review", "Immediate account closure, credits forfeited, possible legal action", "Order cancelled, account flagged, 30-day suspension", "Refund denied, account restricted, legal warning"], answer: 1 },
+      { q: "Through which platform can agents request sensitive user information?", options: ["Any platform is fine", "WhatsApp only", "Intercom only", "WeChat only"], answer: 2 },
+      { q: "What are 4 categories of special (heightened protection) personal data?", options: ["Name, address, phone, email", "Government IDs, full card numbers, passwords/PINs/2FA codes, health data", "Order history, device type, location, preferences", "Username, password, game ID, bind type"], answer: 1 }
+    ]
+  },
+  11: { // Module 12 - Game & App Operations (10 questions)
+    questions: [
+      { q: "Within how many minutes must a game testing request be sent after receiving it?", options: ["30 minutes", "60 minutes", "5 minutes", "15 minutes"], answer: 2 },
+      { q: "What is the minimum order value for custom currency games?", options: ["500", "1,000", "2,000", "5,000"], answer: 2 },
+      { q: "What is the maximum wait time before deciding on an unresponsive client?", options: ["10 minutes", "20 minutes", "30 minutes", "1 hour"], answer: 1 },
+      { q: "What percentage of revenue comes from the top 20% of clients?", options: ["70%", "80%", "88.6%", "95%"], answer: 2 },
+      { q: "Name a Bucket 4 urgent incident requiring immediate IT ping.", options: ["App update needed", "System down or payment/order flow broken for all users", "Single user login issue", "Slow order processing"], answer: 1 },
+      { q: "Why must you update the password in-app AND notify the supplier?", options: ["It's just best practice", "Supplier relies entirely on the in-app data for login", "IT requires both updates logged", "User expects both confirmations"], answer: 1 },
+      { q: "Which login types are NOT supported by Packsify?", options: ["Google, Facebook, Email", "Apple ID, Google Play Games/Game Center, Play Store/App Store accounts", "FunPlus, IM30, VK", "IGG, VK, FunPlus"], answer: 1 },
+      { q: "Who owns the game testing process end-to-end?", options: ["L1 agent", "L2 agent", "Team Lead", "Whoever is available"], answer: 1 },
+      { q: "What happens if suppliers give conflicting safety information about a game?", options: ["Go with the most positive answer", "Add the game anyway and monitor", "Escalate to Team Lead — never add a game with ban risk", "Ask the user to decide"], answer: 2 },
+      { q: "What must you document after confirming supplier logout?", options: ["Nothing — it's assumed", "A private note: 'Supplier confirmed logout'", "A ClickUp task update", "An Intercom tag"], answer: 1 }
+    ]
+  }
+};
+
+// Quiz state
+let quizState = {
+  active: false,
+  moduleIndex: null,
+  questions: [],
+  currentQ: 0,
+  score: 0,
+  agentName: '',
+  answers: []
+};
+
+// Inject quiz HTML into page
+document.body.insertAdjacentHTML('beforeend', `
+<div id="quizOverlay" style="display:none; position:fixed; inset:0; background:rgba(10,10,15,0.97); z-index:500; overflow-y:auto; padding:40px 20px;">
+  <div style="max-width:620px; margin:0 auto;">
+    <button onclick="closeQuiz()" style="background:none; border:1px solid var(--border); color:var(--text-muted); padding:6px 14px; border-radius:6px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13px; margin-bottom:32px;">← Back to KB</button>
+    <div id="quizContent"></div>
+  </div>
+</div>
+`);
+
+function openQuiz(moduleIndex) {
+  const m = modules[moduleIndex];
+  const qd = quizData[moduleIndex];
+  if (!qd) { alert('Quiz coming soon for this module!'); return; }
+
+  quizState = { active: true, moduleIndex, questions: qd.questions, currentQ: -1, score: 0, agentName: '', answers: [] };
+
+  document.getElementById('quizOverlay').style.display = 'block';
+  renderNameScreen(m);
+  window.scrollTo(0,0);
+}
+
+function closeQuiz() {
+  document.getElementById('quizOverlay').style.display = 'none';
+  quizState.active = false;
+}
+
+function renderNameScreen(m) {
+  document.getElementById('quizContent').innerHTML = `
+    <div style="text-align:center; padding: 20px 0;">
+      <div style="font-size:40px; margin-bottom:16px;">${m.icon}</div>
+      <div style="font-family:'Syne',sans-serif; font-size:11px; color:var(--accent); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Module ${m.num} Quiz</div>
+      <h2 style="font-family:'Syne',sans-serif; font-size:28px; font-weight:800; letter-spacing:-1px; margin-bottom:8px;">${m.title}</h2>
+      <p style="color:var(--text-muted); font-size:14px; margin-bottom:32px;">${quizState.questions.length} questions &nbsp;·&nbsp; Pass score: ${Math.ceil(quizState.questions.length * PASS_THRESHOLD)}/${quizState.questions.length} (90%)</p>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:32px; text-align:left;">
+        <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:8px;">Your name</label>
+        <input id="agentNameInput" type="text" placeholder="Enter your name…" style="width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:12px 16px; color:var(--text); font-size:15px; font-family:'DM Sans',sans-serif; outline:none; margin-bottom:20px;" />
+        <button onclick="startQuiz()" style="width:100%; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:10px; padding:13px; color:white; font-size:14px; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer; letter-spacing:0.3px;">Start Quiz →</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('agentNameInput').addEventListener('keydown', e => { if(e.key==='Enter') startQuiz(); });
+}
+
+function startQuiz() {
+  const name = document.getElementById('agentNameInput').value.trim();
+  if (!name) { document.getElementById('agentNameInput').style.borderColor = '#f87171'; return; }
+  quizState.agentName = name;
+  quizState.currentQ = 0;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const { questions, currentQ } = quizState;
+  const q = questions[currentQ];
+  const progress = ((currentQ) / questions.length) * 100;
+
+  document.getElementById('quizContent').innerHTML = `
+    <div style="margin-bottom:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:12px; color:var(--text-dim);">Question ${currentQ+1} of ${questions.length}</span>
+        <span style="font-size:12px; color:var(--accent);">Score: ${quizState.score}/${currentQ}</span>
+      </div>
+      <div style="height:4px; background:var(--border); border-radius:4px; overflow:hidden;">
+        <div style="height:100%; width:${progress}%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 0.3s;"></div>
+      </div>
+    </div>
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:32px;">
+      <p style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700; line-height:1.4; margin-bottom:28px; letter-spacing:-0.3px;">${q.q}</p>
+      <div id="optionsContainer" style="display:flex; flex-direction:column; gap:10px;">
+        ${q.options.map((opt, i) => `
+          <button onclick="selectAnswer(${i})" style="background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 18px; color:var(--text-muted); font-size:14px; font-family:'DM Sans',sans-serif; cursor:pointer; text-align:left; transition:all 0.15s; display:flex; align-items:center; gap:12px;">
+            <span style="width:24px; height:24px; border:1px solid var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:var(--accent); flex-shrink:0;">${String.fromCharCode(65+i)}</span>
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function selectAnswer(selectedIndex) {
+  const q = quizState.questions[quizState.currentQ];
+  const isCorrect = selectedIndex === q.answer;
+  if (isCorrect) quizState.score++;
+  quizState.answers.push({ question: q.q, selected: selectedIndex, correct: q.answer, isCorrect });
+
+  // Show feedback
+  const btns = document.querySelectorAll('#optionsContainer button');
+  btns.forEach((btn, i) => {
+    btn.style.cursor = 'default';
+    btn.onclick = null;
+    if (i === q.answer) {
+      btn.style.background = '#34d39920';
+      btn.style.borderColor = '#34d399';
+      btn.style.color = '#34d399';
+    } else if (i === selectedIndex && !isCorrect) {
+      btn.style.background = '#f8717120';
+      btn.style.borderColor = '#f87171';
+      btn.style.color = '#f87171';
+    }
+  });
+
+  // Next button
+  const container = document.getElementById('quizContent');
+  const feedback = document.createElement('div');
+  feedback.style.cssText = 'margin-top:20px; display:flex; align-items:center; justify-content:space-between;';
+  feedback.innerHTML = `
+    <span style="font-size:13px; color:${isCorrect ? '#34d399' : '#f87171'}; font-weight:500;">
+      ${isCorrect ? '✓ Correct!' : `✗ Correct answer: ${q.options[q.answer]}`}
+    </span>
+    <button onclick="${quizState.currentQ + 1 < quizState.questions.length ? 'nextQuestion()' : 'showResults()'}" 
+      style="background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:8px; padding:10px 20px; color:white; font-size:13px; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer;">
+      ${quizState.currentQ + 1 < quizState.questions.length ? 'Next →' : 'See Results →'}
+    </button>
+  `;
+  container.querySelector('div:last-child').after(feedback);
+}
+
+function nextQuestion() {
+  quizState.currentQ++;
+  renderQuestion();
+}
+
+function showResults() {
+  const { score, questions, agentName, moduleIndex } = quizState;
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const passed = pct >= 90;
+  const m = modules[moduleIndex];
+
+  // Submit to Google Sheets
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      agentName,
+      module: `Module ${m.num} — ${m.title}`,
+      score: `${score}/${total}`,
+      passFail: passed ? 'PASS ✅' : 'FAIL ❌',
+      percentage: pct + '%'
+    })
+  }).catch(() => {});
+
+  document.getElementById('quizContent').innerHTML = `
+    <div style="text-align:center; padding:20px 0;">
+      <div style="font-size:64px; margin-bottom:16px;">${passed ? '🎉' : '📚'}</div>
+      <div style="font-family:'Syne',sans-serif; font-size:48px; font-weight:800; letter-spacing:-2px; color:${passed ? '#34d399' : '#f87171'}; margin-bottom:4px;">${pct}%</div>
+      <div style="font-family:'Syne',sans-serif; font-size:20px; font-weight:700; margin-bottom:8px; color:${passed ? '#34d399' : '#f87171'}">${passed ? 'PASSED ✅' : 'FAILED ❌'}</div>
+      <p style="color:var(--text-muted); font-size:14px; margin-bottom:8px;">You scored ${score} out of ${total} on <strong>${m.title}</strong></p>
+      <p style="color:var(--text-dim); font-size:12px; margin-bottom:32px;">Minimum to pass: 90% (${Math.ceil(total * 0.9)}/${total})</p>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:24px; text-align:left;">
+        <div style="font-family:'Syne',sans-serif; font-size:11px; color:var(--accent); letter-spacing:1px; text-transform:uppercase; margin-bottom:16px;">Answer Review</div>
+        ${quizState.answers.map((a, i) => `
+          <div style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; gap:10px; align-items:flex-start;">
+            <span style="font-size:14px; flex-shrink:0;">${a.isCorrect ? '✅' : '❌'}</span>
+            <div>
+              <div style="font-size:12px; color:var(--text-muted); margin-bottom:2px;">${a.question}</div>
+              ${!a.isCorrect ? `<div style="font-size:11px; color:#34d399;">Correct: ${quizState.questions[i].options[a.correct]}</div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        ${!passed ? `<button onclick="retryQuiz()" style="background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:10px; padding:12px 24px; color:white; font-size:14px; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer;">Retry Quiz</button>` : ''}
+        <button onclick="closeQuiz()" style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 24px; color:var(--text-muted); font-size:14px; font-family:'DM Sans',sans-serif; cursor:pointer;">Back to KB</button>
+      </div>
+
+      <p style="font-size:11px; color:var(--text-dim); margin-top:20px;">✓ Result saved to your team dashboard</p>
+    </div>
+  `;
+}
+
+function retryQuiz() {
+  quizState.score = 0;
+  quizState.currentQ = 0;
+  quizState.answers = [];
+  renderQuestion();
+}
+</script>
+</body>
+</html>
