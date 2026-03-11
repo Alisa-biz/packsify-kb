@@ -949,7 +949,7 @@
     <div class="hero">
       <div class="hero-tag"><span class="hero-dot"></span> CS Team — Internal</div>
       <h1>CS Knowledge<br><span>Base</span></h1>
-      <p class="hero-desc">Everything Packsify CS team needs to deliver exceptional support — from shift operations to VIP management, policies, and beyond.</p>
+      <p class="hero-desc">Everything your team needs to deliver exceptional support — from shift operations to VIP management, policies, and beyond.</p>
       <div class="hero-stats">
         <div class="stat">
           <div class="stat-num">12</div>
@@ -3088,6 +3088,20 @@ function showResults() {
   const m = modules[moduleIndex];
 
   // Submit to Google Sheets
+  const answerDetails = quizState.answers.map((a, i) => {
+    const q = quizState.questions[i];
+    return `Q${i+1}: ${a.isCorrect ? '✅' : '❌'} | ${q.q} | Your answer: ${q.options[a.selected]} | Correct: ${q.options[a.correct]}`;
+  }).join('\n');
+
+  const wrongAnswers = quizState.answers
+    .map((a, i) => {
+      if (a.isCorrect) return null;
+      const q = quizState.questions[i];
+      return `Q${i+1}: ${q.q} → You chose: "${q.options[a.selected]}" | Correct: "${q.options[a.correct]}"`;
+    })
+    .filter(Boolean)
+    .join('\n') || 'None — all correct!';
+
   fetch(SHEET_URL, {
     method: 'POST',
     mode: 'no-cors',
@@ -3097,7 +3111,9 @@ function showResults() {
       module: `Module ${m.num} — ${m.title}`,
       score: `${score}/${total}`,
       passFail: passed ? 'PASS ✅' : 'FAIL ❌',
-      percentage: pct + '%'
+      percentage: pct + '%',
+      wrongAnswers,
+      allAnswers: answerDetails
     })
   }).catch(() => {});
 
@@ -3110,14 +3126,28 @@ function showResults() {
       <p style="color:var(--text-dim); font-size:12px; margin-bottom:32px;">Minimum to pass: 90% (${Math.ceil(total * 0.9)}/${total})</p>
 
       <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:24px; text-align:left;">
-        <div style="font-family:'Syne',sans-serif; font-size:11px; color:var(--accent); letter-spacing:1px; text-transform:uppercase; margin-bottom:16px;">Answer Review</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+          <div style="font-family:'Syne',sans-serif; font-size:11px; color:var(--accent); letter-spacing:1px; text-transform:uppercase;">Answer Review</div>
+          <div style="font-size:11px; color:var(--text-dim);">${quizState.answers.filter(a=>a.isCorrect).length} correct · ${quizState.answers.filter(a=>!a.isCorrect).length} wrong</div>
+        </div>
         ${quizState.answers.map((a, i) => `
-          <div style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; gap:10px; align-items:flex-start;">
-            <span style="font-size:14px; flex-shrink:0;">${a.isCorrect ? '✅' : '❌'}</span>
-            <div>
-              <div style="font-size:12px; color:var(--text-muted); margin-bottom:2px;">${a.question}</div>
-              ${!a.isCorrect ? `<div style="font-size:11px; color:#34d399;">Correct: ${quizState.questions[i].options[a.correct]}</div>` : ''}
+          <div style="padding:14px; margin-bottom:10px; border-radius:10px; background:${a.isCorrect ? '#34d39908' : '#f8717108'}; border:1px solid ${a.isCorrect ? '#34d39930' : '#f8717130'};">
+            <div style="display:flex; gap:10px; align-items:flex-start; margin-bottom:${!a.isCorrect ? '10px' : '0'};">
+              <span style="font-size:15px; flex-shrink:0; margin-top:1px;">${a.isCorrect ? '✅' : '❌'}</span>
+              <div style="font-size:13px; color:var(--text); font-weight:600; line-height:1.4;">${a.question}</div>
             </div>
+            ${!a.isCorrect ? `
+              <div style="margin-left:25px; display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; align-items:baseline; gap:8px;">
+                  <span style="font-size:10px; font-family:'Syne',sans-serif; font-weight:700; letter-spacing:0.5px; color:#f87171; text-transform:uppercase; flex-shrink:0;">Your answer</span>
+                  <span style="font-size:12px; color:#f87171; background:#f8717115; padding:3px 8px; border-radius:5px;">${quizState.questions[i].options[a.selected]}</span>
+                </div>
+                <div style="display:flex; align-items:baseline; gap:8px;">
+                  <span style="font-size:10px; font-family:'Syne',sans-serif; font-weight:700; letter-spacing:0.5px; color:#34d399; text-transform:uppercase; flex-shrink:0;">Correct answer</span>
+                  <span style="font-size:12px; color:#34d399; background:#34d39915; padding:3px 8px; border-radius:5px;">${quizState.questions[i].options[a.correct]}</span>
+                </div>
+              </div>
+            ` : ''}
           </div>
         `).join('')}
       </div>
